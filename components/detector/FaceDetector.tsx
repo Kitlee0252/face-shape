@@ -3,18 +3,33 @@
 import { useState, useCallback } from 'react';
 import UploadZone from '@/components/upload/UploadZone';
 import CanvasOverlay from '@/components/detector/CanvasOverlay';
-import FaceShapeResultCard from '@/components/result/FaceShapeResult';
+import FiveAnalysisResults from '@/components/result/FiveAnalysisResults';
 import { detectLandmarks } from '@/lib/detection/landmarks';
 import { classifyFaceShape } from '@/lib/detection/faceShape';
-import type { FaceShapeResult } from '@/lib/detection/types';
+import { classifyEyeShape } from '@/lib/detection/eyeShape';
+import { classifyNoseShape } from '@/lib/detection/noseShape';
+import { classifyLipShape } from '@/lib/detection/lipShape';
+import { classifyEyebrowShape } from '@/lib/detection/eyebrowShape';
+import type { FiveAnalysisResult } from '@/lib/detection/types';
 
 type Status = 'idle' | 'loading' | 'detecting' | 'done' | 'error';
+
+function runAnalysis(keypoints: import('@/lib/detection/types').Point[]): FiveAnalysisResult {
+  return {
+    faceShape: classifyFaceShape(keypoints),
+    eyeShape: classifyEyeShape(keypoints),
+    noseShape: classifyNoseShape(keypoints),
+    lipShape: classifyLipShape(keypoints),
+    eyebrowShape: classifyEyebrowShape(keypoints),
+    keypoints,
+  };
+}
 
 export default function FaceDetector() {
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
   const [imageSrc, setImageSrc] = useState('');
-  const [result, setResult] = useState<FaceShapeResult | null>(null);
+  const [result, setResult] = useState<FiveAnalysisResult | null>(null);
 
   const handleImage = useCallback(async (file: File) => {
     setError('');
@@ -32,37 +47,26 @@ export default function FaceDetector() {
 
         // Resize for performance
         const maxW = 640;
+        let source: HTMLImageElement | HTMLCanvasElement = img;
         if (img.naturalWidth > maxW) {
           const scale = maxW / img.naturalWidth;
           const canvas = document.createElement('canvas');
           canvas.width = Math.round(img.naturalWidth * scale);
           canvas.height = Math.round(img.naturalHeight * scale);
           canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-          // Re-detect on resized canvas
-          setStatus('detecting');
-          const keypoints = await detectLandmarks(canvas);
-
-          if (keypoints.length === 0) {
-            setStatus('error');
-            setError('No face detected. Try a clearer photo with good lighting.');
-            return;
-          }
-
-          setResult(classifyFaceShape(keypoints));
-        } else {
-          setStatus('detecting');
-          const keypoints = await detectLandmarks(img);
-
-          if (keypoints.length === 0) {
-            setStatus('error');
-            setError('No face detected. Try a clearer photo with good lighting.');
-            return;
-          }
-
-          setResult(classifyFaceShape(keypoints));
+          source = canvas;
         }
 
+        setStatus('detecting');
+        const keypoints = await detectLandmarks(source);
+
+        if (keypoints.length === 0) {
+          setStatus('error');
+          setError('No face detected. Try a clearer photo with good lighting.');
+          return;
+        }
+
+        setResult(runAnalysis(keypoints));
         setStatus('done');
       } catch (err) {
         setStatus('error');
@@ -107,8 +111,8 @@ export default function FaceDetector() {
 
       {status === 'done' && result && (
         <div className="flex w-full flex-col items-center gap-6">
-          <CanvasOverlay imageSrc={imageSrc} result={result} />
-          <FaceShapeResultCard result={result} />
+          <CanvasOverlay imageSrc={imageSrc} result={result.faceShape} />
+          <FiveAnalysisResults result={result} />
           <button
             onClick={handleReset}
             className="rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-200"
