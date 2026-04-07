@@ -23,6 +23,57 @@ const TABS: { id: TabId; label: string; icon: string }[] = [
   { id: 'nose', label: 'Nose', icon: '\u{1F443}' },
 ];
 
+/**
+ * Normalize result data to handle old sessionStorage format
+ * that may be missing new fields (detailed, shape, symmetry, etc.)
+ */
+function normalizeResult(result: FiveAnalysisResult): FiveAnalysisResult {
+  const eye = result.eyeShape;
+  const brow = result.eyebrowShape;
+  const lip = result.lipShape;
+  const nose = result.noseShape;
+
+  return {
+    ...result,
+    eyeShape: {
+      ...eye,
+      shape: eye.shape ?? 'almond',
+      symmetry: eye.symmetry ?? 'good',
+      detailed: eye.detailed ?? {
+        aspectRatio: eye.sizeRatio > 0 ? 1 / eye.sizeRatio : 0,
+        avgHeight: 0, avgWidth: 0, distance: 0, leftWidth: 0, rightWidth: 0,
+      },
+    },
+    eyebrowShape: {
+      ...brow,
+      thickness: brow.thickness ?? 'medium',
+      length: brow.length ?? 'medium',
+      symmetry: brow.symmetry ?? 'good',
+      detailed: brow.detailed ?? {
+        height: 0, leftLength: 0, rightLength: 0, length: 0, spacing: 0,
+      },
+    },
+    lipShape: {
+      ...lip,
+      cupidBow: lip.cupidBow ?? 'moderate',
+      shapeClass: lip.shapeClass ?? 'balanced',
+      symmetry: lip.symmetry ?? 'good',
+      detailed: lip.detailed ?? {
+        height: 0, upperHeight: 0, lowerHeight: 0, width: 0,
+      },
+    },
+    noseShape: {
+      ...nose,
+      bridge: nose.bridge ?? 'medium',
+      shapeClass: nose.shapeClass ?? 'straight',
+      proportion: nose.proportion ?? 'proportioned',
+      detailed: nose.detailed ?? {
+        bridgeHeight: 0, bridgeWidth: 0, length: 0, width: 0,
+      },
+    },
+  };
+}
+
 function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
@@ -313,8 +364,9 @@ function NoseTab({ result }: Props) {
 
 /* ---------- Main Component ---------- */
 
-export default function AnalysisTabs({ result }: Props) {
+export default function AnalysisTabs({ result: rawResult }: Props) {
   const [activeTab, setActiveTab] = useState<TabId>('shape');
+  const result = normalizeResult(rawResult);
 
   return (
     <div>
