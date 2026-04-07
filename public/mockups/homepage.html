@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Face Shape AI — Homepage Design Mockups</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #0F172A; color: #F8FAFC; }
+
+  /* Selector */
+  .selector {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(15,23,42,0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(248,250,252,0.1);
+    padding: 16px 24px;
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+  }
+  .selector h2 { font-size: 14px; font-weight: 500; color: #94A3B8; letter-spacing: 0.05em; text-transform: uppercase; }
+  .selector button {
+    padding: 8px 20px; border-radius: 999px; border: 1px solid rgba(248,250,252,0.2);
+    background: transparent; color: #F8FAFC; font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .selector button:hover { border-color: #F8FAFC; }
+  .selector button.active { background: #F8FAFC; color: #0F172A; border-color: #F8FAFC; }
+
+  .mockup-container { max-width: 1200px; margin: 0 auto; padding: 40px 20px 80px; }
+  .mockup-label {
+    text-align: center; margin-bottom: 32px;
+    font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 500;
+  }
+  .mockup-label span { color: #94A3B8; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 400; display: block; margin-top: 4px; }
+
+  /* Mockup Frame */
+  .frame {
+    background: #fff; border-radius: 16px; overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+  }
+  .frame-bar {
+    background: #F1F5F9; padding: 12px 16px; display: flex; align-items: center; gap: 8px;
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot.r { background: #EF4444; } .dot.y { background: #EAB308; } .dot.g { background: #22C55E; }
+  .frame-url {
+    flex: 1; background: #fff; border-radius: 6px; padding: 6px 12px;
+    font-size: 12px; color: #64748B; text-align: center;
+  }
+
+  /* === DESIGN A: Coral accent === */
+  .design-a { --accent: #E8856C; --accent-light: #FFF1ED; --accent-dark: #C4664E; }
+  /* === DESIGN B: Lavender accent === */
+  .design-b { --accent: #9B8FD8; --accent-light: #F0EEFF; --accent-dark: #7B6FC0; }
+
+  .page { color: #0F172A; }
+
+  /* Nav */
+  .nav { padding: 16px 48px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #F1F5F9; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+  .nav-links { display: flex; gap: 32px; font-size: 14px; color: #64748B; }
+  .nav-links a { color: inherit; text-decoration: none; }
+  .nav-cta {
+    padding: 8px 20px; border-radius: 999px; font-size: 13px; font-weight: 600;
+    background: #0F172A; color: #fff; border: none;
+  }
+
+  /* Hero */
+  .hero { padding: 80px 48px 64px; text-align: center; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 500;
+    margin-bottom: 24px;
+  }
+  .design-a .hero-badge { background: var(--accent-light); color: var(--accent-dark); }
+  .design-b .hero-badge { background: var(--accent-light); color: var(--accent-dark); }
+  .hero h1 {
+    font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 700;
+    line-height: 1.15; max-width: 700px; margin: 0 auto 16px;
+  }
+  .hero p { font-size: 18px; color: #64748B; max-width: 520px; margin: 0 auto 40px; line-height: 1.6; }
+
+  /* Upload area */
+  .upload-area {
+    max-width: 520px; margin: 0 auto; padding: 48px 32px;
+    border: 2px dashed #CBD5E1; border-radius: 20px;
+    text-align: center; transition: all 0.2s;
+    cursor: pointer; position: relative;
+  }
+  .upload-area:hover { border-color: var(--accent); background: var(--accent-light); }
+  .upload-icon { width: 48px; height: 48px; margin: 0 auto 16px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+  .design-a .upload-icon { background: var(--accent-light); color: var(--accent); }
+  .design-b .upload-icon { background: var(--accent-light); color: var(--accent); }
+  .upload-area h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .upload-area .sub { font-size: 13px; color: #94A3B8; }
+
+  /* Privacy pill */
+  .privacy-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 999px; font-size: 12px; color: #64748B;
+    background: #F8FAFC; border: 1px solid #E2E8F0; margin-top: 20px;
+  }
+  .privacy-pill svg { width: 14px; height: 14px; color: #22C55E; }
+
+  /* Trust bar */
+  .trust-bar {
+    display: flex; justify-content: center; gap: 48px; padding: 32px 48px;
+    border-top: 1px solid #F1F5F9;
+  }
+  .trust-item { text-align: center; }
+  .trust-item .num { font-size: 24px; font-weight: 700; font-family: 'Playfair Display', serif; }
+  .trust-item .label { font-size: 12px; color: #94A3B8; margin-top: 2px; }
+
+  /* How it works */
+  .how-section { padding: 64px 48px; background: #FAFBFC; }
+  .section-title { text-align: center; font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 48px; }
+  .steps { display: flex; gap: 32px; max-width: 900px; margin: 0 auto; }
+  .step { flex: 1; text-align: center; }
+  .step-num {
+    width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; margin: 0 auto 16px;
+  }
+  .design-a .step-num { background: var(--accent-light); color: var(--accent); }
+  .design-b .step-num { background: var(--accent-light); color: var(--accent); }
+  .step h4 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .step p { font-size: 14px; color: #64748B; line-height: 1.5; }
+
+  /* Face shapes grid */
+  .shapes-section { padding: 64px 48px; }
+  .shapes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 900px; margin: 0 auto; }
+  .shape-card {
+    padding: 24px 16px; border-radius: 16px; text-align: center;
+    border: 1px solid #E2E8F0; transition: all 0.2s; cursor: pointer;
+  }
+  .shape-card:hover { border-color: var(--accent); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+  .shape-icon { width: 56px; height: 56px; background: #F1F5F9; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .shape-card h4 { font-size: 14px; font-weight: 600; }
+  .shape-card p { font-size: 12px; color: #94A3B8; margin-top: 4px; }
+
+  /* Results preview */
+  .results-section { padding: 64px 48px; background: #FAFBFC; }
+  .results-demo { max-width: 800px; margin: 0 auto; display: flex; gap: 32px; align-items: flex-start; }
+  .results-photo {
+    width: 300px; height: 380px; border-radius: 16px; flex-shrink: 0;
+    background: linear-gradient(135deg, #E2E8F0 0%, #CBD5E1 100%);
+    display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+  }
+  .results-photo-label { font-size: 13px; color: #94A3B8; }
+  .results-photo .overlay-lines {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(transparent 30%, rgba(232,133,108,0.15) 30%, rgba(232,133,108,0.15) 32%, transparent 32%),
+      linear-gradient(transparent 48%, rgba(34,211,238,0.15) 48%, rgba(34,211,238,0.15) 50%, transparent 50%),
+      linear-gradient(transparent 68%, rgba(168,85,247,0.15) 68%, rgba(168,85,247,0.15) 70%, transparent 70%);
+  }
+  .design-b .results-photo .overlay-lines {
+    background:
+      linear-gradient(transparent 30%, rgba(155,143,216,0.2) 30%, rgba(155,143,216,0.2) 32%, transparent 32%),
+      linear-gradient(transparent 48%, rgba(34,211,238,0.2) 48%, rgba(34,211,238,0.2) 50%, transparent 50%),
+      linear-gradient(transparent 68%, rgba(168,85,247,0.2) 68%, rgba(168,85,247,0.2) 70%, transparent 70%);
+  }
+  .results-cards { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+  .result-card {
+    padding: 16px 20px; border-radius: 14px; background: #fff;
+    border: 1px solid #E2E8F0;
+  }
+  .result-card .rc-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; }
+  .result-card .rc-value { font-size: 20px; font-weight: 700; font-family: 'Playfair Display', serif; margin-top: 2px; }
+  .result-card .rc-bar { height: 4px; border-radius: 2px; background: #F1F5F9; margin-top: 8px; overflow: hidden; }
+  .result-card .rc-bar-fill { height: 100%; border-radius: 2px; }
+  .design-a .rc-bar-fill { background: var(--accent); }
+  .design-b .rc-bar-fill { background: var(--accent); }
+  .result-card .rc-tags { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .rc-tag { padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 500; }
+  .design-a .rc-tag { background: var(--accent-light); color: var(--accent-dark); }
+  .design-b .rc-tag { background: var(--accent-light); color: var(--accent-dark); }
+
+  /* Footer */
+  .footer { padding: 40px 48px; border-top: 1px solid #F1F5F9; text-align: center; font-size: 13px; color: #94A3B8; }
+
+  /* Visibility toggle */
+  .hidden { display: none !important; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 32px; }
+    .steps { flex-direction: column; }
+    .shapes-grid { grid-template-columns: repeat(2, 1fr); }
+    .results-demo { flex-direction: column; }
+    .results-photo { width: 100%; height: 240px; }
+    .nav { padding: 12px 20px; }
+    .hero { padding: 48px 20px 40px; }
+    .trust-bar { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="selector">
+  <h2>Choose accent color</h2>
+  <button class="active" onclick="switchDesign('a')">A · Coral</button>
+  <button onclick="switchDesign('b')">B · Lavender</button>
+</div>
+
+<div class="mockup-container">
+  <div class="mockup-label">
+    Homepage — High-end Minimal
+    <span>Playfair Display + Inter · Deep navy + White + Accent</span>
+  </div>
+
+  <div class="frame">
+    <div class="frame-bar">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <div class="frame-url">faceshapeai.org</div>
+    </div>
+
+    <div class="page design-a" id="pageA">
+      <!-- Nav -->
+      <div class="nav">
+        <div class="nav-logo">FaceShape<span style="color:var(--accent)">AI</span></div>
+        <div class="nav-links">
+          <a href="#">Face Shapes</a>
+          <a href="#">How It Works</a>
+          <a href="#">About</a>
+        </div>
+        <button class="nav-cta">Try Now</button>
+      </div>
+
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero-badge">✦ AI-Powered · 100% Private</div>
+        <h1>Discover Your Face Shape in Seconds</h1>
+        <p>Upload a photo and get personalized hairstyle, glasses, and makeup recommendations — all processed in your browser.</p>
+
+        <div class="upload-area">
+          <div class="upload-icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12M8 8l4-4 4 4"/></svg>
+          </div>
+          <h3>Drop your photo here</h3>
+          <p class="sub">or click to browse · JPG, PNG · Max 5MB</p>
+        </div>
+
+        <div class="privacy-pill">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 6v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V6l-8-4z"/></svg>
+          Your photo never leaves your browser
+        </div>
+      </div>
+
+      <!-- Trust bar -->
+      <div class="trust-bar">
+        <div class="trust-item"><div class="num">50,000+</div><div class="label">Faces analyzed</div></div>
+        <div class="trust-item"><div class="num">&lt; 3s</div><div class="label">Detection time</div></div>
+        <div class="trust-item"><div class="num">5</div><div class="label">Analysis dimensions</div></div>
+        <div class="trust-item"><div class="num">7</div><div class="label">Face shape types</div></div>
+      </div>
+
+      <!-- How it works -->
+      <div class="how-section">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <h4>Upload Photo</h4>
+            <p>Drop a front-facing photo or use your camera. We never store your image.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <h4>AI Analysis</h4>
+            <p>Our AI maps 478 facial landmarks and analyzes 5 dimensions in under 3 seconds.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <h4>Get Recommendations</h4>
+            <p>See your face shape with visual overlay, plus personalized style recommendations.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results preview -->
+      <div class="results-section">
+        <h2 class="section-title">What You'll Get</h2>
+        <div class="results-demo">
+          <div class="results-photo">
+            <div class="overlay-lines"></div>
+            <span class="results-photo-label">Detection Visualization</span>
+          </div>
+          <div class="results-cards">
+            <div class="result-card">
+              <div class="rc-label">Face Shape</div>
+              <div class="rc-value">Oval</div>
+              <div class="rc-bar"><div class="rc-bar-fill" style="width:87%"></div></div>
+            </div>
+            <div class="result-card">
+              <div class="rc-label">Eye Shape</div>
+              <div class="rc-tags"><span class="rc-tag">Upturned</span><span class="rc-tag">Medium</span><span class="rc-tag">Standard</span></div>
+            </div>
+            <div class="result-card">
+              <div class="rc-label">Nose Shape</div>
+              <div class="rc-tags"><span class="rc-tag">Medium width</span><span class="rc-tag">Medium length</span></div>
+            </div>
+            <div class="result-card">
+              <div class="rc-label">Best Hairstyles</div>
+              <div style="display:flex;gap:8px;margin-top:8px;">
+                <div style="width:60px;height:60px;border-radius:10px;background:#F1F5F9;"></div>
+                <div style="width:60px;height:60px;border-radius:10px;background:#F1F5F9;"></div>
+                <div style="width:60px;height:60px;border-radius:10px;background:#F1F5F9;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Face shapes -->
+      <div class="shapes-section">
+        <h2 class="section-title">7 Face Shape Types</h2>
+        <div class="shapes-grid">
+          <div class="shape-card"><div class="shape-icon">🥚</div><h4>Oval</h4><p>Balanced proportions</p></div>
+          <div class="shape-card"><div class="shape-icon">🔵</div><h4>Round</h4><p>Equal width & length</p></div>
+          <div class="shape-card"><div class="shape-icon">⬜</div><h4>Square</h4><p>Strong jawline</p></div>
+          <div class="shape-card"><div class="shape-icon">💜</div><h4>Heart</h4><p>Wide forehead, narrow chin</p></div>
+          <div class="shape-card"><div class="shape-icon">📐</div><h4>Oblong</h4><p>Elongated shape</p></div>
+          <div class="shape-card"><div class="shape-icon">💎</div><h4>Diamond</h4><p>Wide cheekbones</p></div>
+          <div class="shape-card"><div class="shape-icon">🔺</div><h4>Triangle</h4><p>Wide jaw, narrow forehead</p></div>
+          <div class="shape-card" style="border-style:dashed;border-color:var(--accent);">
+            <div class="shape-icon" style="background:var(--accent-light);">✨</div>
+            <h4 style="color:var(--accent-dark);">Mixed</h4>
+            <p>Hybrid detection</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        © 2026 FaceShapeAI · Privacy · Terms · About
+      </div>
+    </div>
+
+    <!-- Design B (Lavender) — same structure, different class -->
+    <div class="page design-b hidden" id="pageB">
+      <div class="nav">
+        <div class="nav-logo">FaceShape<span style="color:var(--accent)">AI</span></div>
+        <div class="nav-links"><a href="#">Face Shapes</a><a href="#">How It Works</a><a href="#">About</a></div>
+        <button class="nav-cta">Try Now</button>
+      </div>
+      <div class="hero">
+        <div class="hero-badge">✦ AI-Powered · 100% Private</div>
+        <h1>Discover Your Face Shape in Seconds</h1>
+        <p>Upload a photo and get personalized hairstyle, glasses, and makeup recommendations — all processed in your browser.</p>
+        <div class="upload-area">
+          <div class="upload-icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12M8 8l4-4 4 4"/></svg>
+          </div>
+          <h3>Drop your photo here</h3>
+          <p class="sub">or click to browse · JPG, PNG · Max 5MB</p>
+        </div>
+        <div class="privacy-pill">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 6v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V6l-8-4z"/></svg>
+          Your photo never leaves your browser
+        </div>
+      </div>
+      <div class="trust-bar">
+        <div class="trust-item"><div class="num">50,000+</div><div class="label">Faces analyzed</div></div>
+        <div class="trust-item"><div class="num">&lt; 3s</div><div class="label">Detection time</div></div>
+        <div class="trust-item"><div class="num">5</div><div class="label">Analysis dimensions</div></div>
+        <div class="trust-item"><div class="num">7</div><div class="label">Face shape types</div></div>
+      </div>
+      <div class="how-section">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><h4>Upload Photo</h4><p>Drop a front-facing photo or use your camera. We never store your image.</p></div>
+          <div class="step"><div class="step-num">2</div><h4>AI Analysis</h4><p>Our AI maps 478 facial landmarks and analyzes 5 dimensions in under 3 seconds.</p></div>
+          <div class="step"><div class="step-num">3</div><h4>Get Recommendations</h4><p>See your face shape with visual overlay, plus personalized style recommendations.</p></div>
+        </div>
+      </div>
+      <div class="results-section">
+        <h2 class="section-title">What You'll Get</h2>
+        <div class="results-demo">
+          <div class="results-photo"><div class="overlay-lines"></div><span class="results-photo-label">Detection Visualization</span></div>
+          <div class="results-cards">
+            <div class="result-card"><div class="rc-label">Face Shape</div><div class="rc-value">Oval</div><div class="rc-bar"><div class="rc-bar-fill" style="width:87%"></div></div></div>
+            <div class="result-card"><div class="rc-label">Eye Shape</div><div class="rc-tags"><span class="rc-tag">Upturned</span><span class="rc-tag">Medium</span><span class="rc-tag">Standard</span></div></div>
+            <div class="result-card"><div class="rc-label">Nose Shape</div><div class="rc-tags"><span class="rc-tag">Medium width</span><span class="rc-tag">Medium length</span></div></div>
+            <div class="result-card"><div class="rc-label">Best Hairstyles</div><div style="display:flex;gap:8px;margin-top:8px;"><div style="width:60px;height:60px;border-radius:10px;background:#F1F5F9;"></div><div style="width:60px;height:60px;border-radius:10px;background:#F1F5F9;"></div><div style="width:60px;height:60px;border-radius:10px;background:#F1F5F9;"></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="shapes-section">
+        <h2 class="section-title">7 Face Shape Types</h2>
+        <div class="shapes-grid">
+          <div class="shape-card"><div class="shape-icon">🥚</div><h4>Oval</h4><p>Balanced proportions</p></div>
+          <div class="shape-card"><div class="shape-icon">🔵</div><h4>Round</h4><p>Equal width & length</p></div>
+          <div class="shape-card"><div class="shape-icon">⬜</div><h4>Square</h4><p>Strong jawline</p></div>
+          <div class="shape-card"><div class="shape-icon">💜</div><h4>Heart</h4><p>Wide forehead, narrow chin</p></div>
+          <div class="shape-card"><div class="shape-icon">📐</div><h4>Oblong</h4><p>Elongated shape</p></div>
+          <div class="shape-card"><div class="shape-icon">💎</div><h4>Diamond</h4><p>Wide cheekbones</p></div>
+          <div class="shape-card"><div class="shape-icon">🔺</div><h4>Triangle</h4><p>Wide jaw, narrow forehead</p></div>
+          <div class="shape-card" style="border-style:dashed;border-color:var(--accent);"><div class="shape-icon" style="background:var(--accent-light);">✨</div><h4 style="color:var(--accent-dark);">Mixed</h4><p>Hybrid detection</p></div>
+        </div>
+      </div>
+      <div class="footer">© 2026 FaceShapeAI · Privacy · Terms · About</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchDesign(d) {
+  document.getElementById('pageA').classList.toggle('hidden', d !== 'a');
+  document.getElementById('pageB').classList.toggle('hidden', d !== 'b');
+  document.querySelectorAll('.selector button').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
