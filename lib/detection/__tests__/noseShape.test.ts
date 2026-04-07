@@ -100,4 +100,39 @@ describe('classifyNoseShape', () => {
       expect(result.lengthRatio).toBeGreaterThan(0);
     });
   });
+
+  describe('bridge classification', () => {
+    it('classifies nose bridge height', () => {
+      const kp = makeNoseKeypoints({ noseWidthRatio: 0.25, noseLengthRatio: 0.28 });
+      const result = classifyNoseShape(kp);
+      expect(['very high', 'high', 'medium', 'low']).toContain(result.bridge);
+    });
+  });
+
+  describe('shape classification', () => {
+    it('classifies nose shape', () => {
+      const kp = makeNoseKeypoints({ noseWidthRatio: 0.25, noseLengthRatio: 0.28 });
+      const result = classifyNoseShape(kp);
+      expect(['straight', 'curved', 'concave']).toContain(result.shapeClass);
+    });
+  });
+
+  describe('proportion classification', () => {
+    it('classifies proportion', () => {
+      const kp = makeNoseKeypoints({ noseWidthRatio: 0.25, noseLengthRatio: 0.28 });
+      const result = classifyNoseShape(kp);
+      expect(['proportioned', 'slightly disproportioned', 'disproportioned']).toContain(result.proportion);
+    });
+  });
+
+  describe('detailed measurements', () => {
+    it('includes raw measurements', () => {
+      const kp = makeNoseKeypoints({ noseWidthRatio: 0.25, noseLengthRatio: 0.28 });
+      const result = classifyNoseShape(kp);
+      expect(result.detailed.length).toBeGreaterThan(0);
+      expect(result.detailed.width).toBeGreaterThan(0);
+      expect(result.detailed.bridgeHeight).toBeGreaterThan(0);
+      expect(result.detailed.bridgeWidth).toBeGreaterThanOrEqual(0);
+    });
+  });
 });
