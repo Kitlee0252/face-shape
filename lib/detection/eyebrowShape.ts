@@ -10,7 +10,7 @@
  * - Right: head 70, peak 105, tail 107
  * - Left: head 300, peak 334, tail 336
  */
-import type { Point, EyebrowShapeResult, BrowShape, BrowSlope } from './types';
+import type { Point, EyebrowShapeResult, BrowShape, BrowSlope, BrowThickness, BrowLength, SymmetryLevel } from './types';
 import { distance, angleDeg } from './geometry';
 
 const BROW = {
@@ -36,7 +36,14 @@ function classifySingleBrow(kp: Point[], brow: { head: number; peak: number; tai
   const browLength = distance(head, tail);
   const normalizedSlope = browLength > 0 ? slopeDy / browLength : 0;
 
-  return { archAngle, normalizedSlope };
+  // Arch height: perpendicular distance from peak to head-tail line
+  const headPeakDist = distance(head, peak);
+  const peakTailDist = distance(peak, tail);
+  const s = (browLength + headPeakDist + peakTailDist) / 2;
+  const area = Math.sqrt(Math.max(0, s * (s - browLength) * (s - headPeakDist) * (s - peakTailDist)));
+  const archHeight = browLength > 0 ? (2 * area) / browLength : 0;
+
+  return { archAngle, normalizedSlope, browLength, archHeight };
 }
 
 export function classifyEyebrowShape(keypoints: Point[]): EyebrowShapeResult {
@@ -63,11 +70,41 @@ export function classifyEyebrowShape(keypoints: Point[]): EyebrowShapeResult {
   else if (avgSlope < -0.1) slope = 'upward';
   else slope = 'flat';
 
+  // Thickness: based on arch height (perpendicular distance from peak to head-tail line)
+  const avgArchHeight = (right.archHeight + left.archHeight) / 2;
+  let thickness: BrowThickness;
+  if (avgArchHeight > 8) thickness = 'thick';
+  else if (avgArchHeight > 4) thickness = 'medium';
+  else if (avgArchHeight > 2) thickness = 'thin';
+  else thickness = 'very thin';
+
+  // Length: brow length relative to inter-eye distance
+  const avgBrowLength = (right.browLength + left.browLength) / 2;
+  const lengthRatio = eyeInnerDist > 0 ? avgBrowLength / eyeInnerDist : 1;
+  let browLengthClass: BrowLength;
+  if (lengthRatio > 1.2) browLengthClass = 'long';
+  else if (lengthRatio < 0.9) browLengthClass = 'short';
+  else browLengthClass = 'medium';
+
+  // Symmetry: based on difference in brow lengths
+  const lengthDiff = Math.abs(right.browLength - left.browLength);
+  const symmetryRatio = avgBrowLength > 0 ? lengthDiff / avgBrowLength : 0;
+  let symmetry: SymmetryLevel;
+  if (symmetryRatio < 0.03) symmetry = 'excellent';
+  else if (symmetryRatio < 0.08) symmetry = 'good';
+  else if (symmetryRatio < 0.15) symmetry = 'moderate';
+  else symmetry = 'asymmetric';
+
   return {
-    shape,
-    slope,
-    archAngle: avgArchAngle,
-    spacing,
+    shape, slope, archAngle: avgArchAngle, spacing,
+    thickness, length: browLengthClass, symmetry,
+    detailed: {
+      height: avgArchHeight,
+      leftLength: left.browLength,
+      rightLength: right.browLength,
+      length: avgBrowLength,
+      spacing: browHeadDist,
+    },
   };
 }
 

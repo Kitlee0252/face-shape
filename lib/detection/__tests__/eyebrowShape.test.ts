@@ -114,4 +114,40 @@ describe('classifyEyebrowShape', () => {
       expect(result.spacing).toBeGreaterThan(0);
     });
   });
+
+  describe('thickness classification', () => {
+    it('classifies brow thickness', () => {
+      const kp = makeBrowKeypoints({ archAngleDeg: 150, slopeDy: 0, spacingRatio: 1.0 });
+      const result = classifyEyebrowShape(kp);
+      expect(['thick', 'medium', 'thin', 'very thin']).toContain(result.thickness);
+    });
+  });
+
+  describe('length classification', () => {
+    it('classifies brow length', () => {
+      const kp = makeBrowKeypoints({ archAngleDeg: 150, slopeDy: 0, spacingRatio: 1.0 });
+      const result = classifyEyebrowShape(kp);
+      expect(['long', 'medium', 'short']).toContain(result.length);
+    });
+  });
+
+  describe('symmetry classification', () => {
+    it('detects good symmetry for mirrored brows', () => {
+      const kp = makeBrowKeypoints({ archAngleDeg: 150, slopeDy: 0, spacingRatio: 1.0 });
+      const result = classifyEyebrowShape(kp);
+      expect(['excellent', 'good']).toContain(result.symmetry);
+    });
+  });
+
+  describe('detailed measurements', () => {
+    it('includes raw measurements', () => {
+      const kp = makeBrowKeypoints({ archAngleDeg: 150, slopeDy: 0, spacingRatio: 1.0 });
+      const result = classifyEyebrowShape(kp);
+      expect(result.detailed.length).toBeGreaterThan(0);
+      expect(result.detailed.leftLength).toBeGreaterThan(0);
+      expect(result.detailed.rightLength).toBeGreaterThan(0);
+      expect(result.detailed.height).toBeGreaterThanOrEqual(0);
+      expect(result.detailed.spacing).toBeGreaterThan(0);
+    });
+  });
 });
