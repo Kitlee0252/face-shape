@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import HeroSection from '@/components/home/HeroSection';
 import TrustBar from '@/components/home/TrustBar';
+import HowItWorks from '@/components/home/HowItWorks';
+import ResultsPreview from '@/components/home/ResultsPreview';
+import ShapeGrid from '@/components/home/ShapeGrid';
 import FaceDetector from '@/components/detector/FaceDetector';
 
 export default function Home() {
@@ -14,6 +17,9 @@ export default function Home() {
         <>
           <HeroSection onImage={setUploadedFile} />
           <TrustBar />
+          <HowItWorks />
+          <ResultsPreview />
+          <ShapeGrid />
         </>
       ) : (
         <div className="flex flex-col items-center px-4 py-12">
