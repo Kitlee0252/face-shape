@@ -107,8 +107,8 @@ export default function FaceDetector({ initialFile, onReset }: FaceDetectorProps
 
       {(status === 'loading' || status === 'detecting') && (
         <div className="flex flex-col items-center gap-3 py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
-          <p className="text-sm text-gray-500">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-accent border-t-transparent" />
+          <p className="text-sm text-text-secondary">
             {status === 'loading' ? 'Loading face detection model...' : 'Analyzing your face...'}
           </p>
         </div>
@@ -119,7 +119,7 @@ export default function FaceDetector({ initialFile, onReset }: FaceDetectorProps
           <p className="text-sm text-red-500">{error}</p>
           <button
             onClick={handleReset}
-            className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
+            className="rounded-full bg-surface px-5 py-2.5 text-sm font-medium text-primary hover:bg-border transition-colors"
           >
             Try again
           </button>
@@ -132,7 +132,7 @@ export default function FaceDetector({ initialFile, onReset }: FaceDetectorProps
           <FiveAnalysisResults result={result} />
           <button
             onClick={handleReset}
-            className="rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-200"
+            className="rounded-full bg-surface px-5 py-2.5 text-sm font-medium text-primary hover:bg-border transition-colors"
           >
             Try another photo
           </button>
