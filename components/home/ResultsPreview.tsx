@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 const PREVIEW_RATINGS = [
   { label: 'Eyes', score: 8.5 },
   { label: 'Eyebrows', score: 7.1 },
@@ -18,16 +20,18 @@ export default function ResultsPreview() {
         What You&apos;ll Get
       </h2>
       <div className="max-w-4xl mx-auto flex flex-col lg:flex-row gap-8 items-start">
-        {/* Left: detection visualization mockup */}
-        <div className="w-full lg:w-[300px] rounded-2xl bg-gradient-to-br from-surface to-border flex flex-col items-center justify-center relative overflow-hidden flex-shrink-0 p-6 gap-4">
-          {/* Face outline mockup */}
-          <div className="w-40 h-52 rounded-[50%] border-2 border-accent/30 relative">
-            <div className="absolute top-[28%] left-1/2 -translate-x-1/2 w-[80%] h-[2px] bg-red-400/40 rounded" />
-            <div className="absolute top-[38%] left-1/2 -translate-x-1/2 w-[90%] h-[2px] bg-yellow-400/40 rounded" />
-            <div className="absolute top-[52%] left-1/2 -translate-x-1/2 w-[95%] h-[2px] bg-cyan-400/40 rounded" />
-            <div className="absolute top-[68%] left-1/2 -translate-x-1/2 w-[70%] h-[2px] bg-purple-400/40 rounded" />
+        {/* Left: detection visualization */}
+        <div className="w-full lg:w-[300px] rounded-2xl overflow-hidden flex-shrink-0 flex flex-col">
+          <div className="aspect-square overflow-hidden rounded-2xl">
+            <Image
+              src="/images/preview-detection.jpg"
+              alt="AI face landmark detection preview"
+              width={300}
+              height={300}
+              className="w-full h-full object-cover object-top"
+            />
           </div>
-          <span className="text-xs text-text-tertiary">AI Landmark Detection</span>
+          <span className="text-xs text-text-tertiary text-center mt-2">AI Landmark Detection</span>
         </div>
 
         {/* Right: result preview cards */}
