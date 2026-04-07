@@ -10,7 +10,14 @@ import { distance, angleDeg, rangeScore } from './geometry';
 
 /**
  * MediaPipe FaceMesh 478-point landmark indices for face shape measurements.
- * Reference: https://github.com/tensorflow/tfjs-models/blob/master/face-landmarks-detection/mesh_map.jpg
+ *
+ * Verified against official FACEMESH connection definitions:
+ * - 234/454: on FACE_OVAL contour, widest cheekbone points ✓
+ * - 58/288: on FACE_OVAL contour, jaw angle (gonion) ✓
+ * - 10/152: top/bottom of FACE_OVAL contour ✓
+ * - 71/301: forehead near eyebrow level (not temple-widest, but standard choice)
+ *
+ * Sources: tfjs-models/face-landmarks-detection, akashchoudhary436/Face-Shape-Detection
  */
 const LANDMARKS = {
   foreheadLeft: 71,
@@ -24,9 +31,19 @@ const LANDMARKS = {
 } as const;
 
 /**
- * Target ranges for each face shape's ratios.
- * [aspectRatio, foreheadRatio, jawRatio, jawAngle]
- * Each is [min, max].
+ * Target ranges for each face shape's key ratios and jaw angle.
+ *
+ * Cross-validated against:
+ * - Mgeijer/framefinder: aspect ratios + forehead/jaw ratios (6 shapes)
+ * - sinfulExiled/automated-glasses-recommendation: jaw angle < 160° = angular,
+ *   std(widths) low = similar widths → Square/Round
+ * - akashchoudhary436/Face-Shape-Detection: confirms face height/width as primary feature
+ *
+ * Key differentiators per shape:
+ * - Round vs Square: jaw angle (round > 140°, square < 130°)
+ * - Heart vs Diamond: forehead ratio (heart > 0.85, diamond < 0.82)
+ * - Oval vs Oblong: aspect ratio (oval < 1.5, oblong > 1.5)
+ * - Triangle: jaw > forehead (jawRatio > foreheadRatio clearly)
  */
 const SHAPE_RULES: Record<
   FaceShapeType,
@@ -35,57 +52,57 @@ const SHAPE_RULES: Record<
     forehead: [number, number];
     jaw: [number, number];
     jawAngle: [number, number];
-    weight: [number, number, number, number]; // weights for each dimension
+    weight: [number, number, number, number]; // [aspect, forehead, jaw, jawAngle]
   }
 > = {
   oval: {
-    aspect: [1.3, 1.5],
-    forehead: [0.74, 0.9],
-    jaw: [0.7, 0.88],
-    jawAngle: [120, 140],
+    aspect: [1.25, 1.5],    // moderately elongated
+    forehead: [0.74, 0.92],  // balanced, slightly narrower than cheekbone
+    jaw: [0.70, 0.88],       // tapers gently
+    jawAngle: [120, 145],    // moderate angle
     weight: [1.5, 1, 1, 0.8],
   },
   round: {
-    aspect: [1.0, 1.25],
-    forehead: [0.8, 0.95],
-    jaw: [0.8, 0.95],
-    jawAngle: [135, 160],
-    weight: [1.5, 0.8, 0.8, 1.2],
+    aspect: [1.0, 1.25],     // nearly as wide as tall
+    forehead: [0.80, 0.98],  // similar widths across
+    jaw: [0.80, 0.98],       // wide, similar to forehead
+    jawAngle: [140, 170],    // soft, rounded jaw (> 140°)
+    weight: [1.5, 0.8, 0.8, 1.3],
   },
   square: {
-    aspect: [1.0, 1.3],
-    forehead: [0.85, 1.0],
-    jaw: [0.88, 1.05],
-    jawAngle: [100, 125],
-    weight: [1, 0.8, 1.3, 1.5],
+    aspect: [1.0, 1.3],      // can be short or moderate
+    forehead: [0.85, 1.02],  // wide forehead
+    jaw: [0.88, 1.05],       // jaw nearly as wide as cheekbone
+    jawAngle: [95, 130],     // angular, strong jaw (< 130°)
+    weight: [0.8, 0.8, 1.3, 1.8],
   },
   heart: {
-    aspect: [1.2, 1.5],
-    forehead: [0.85, 1.05],
-    jaw: [0.6, 0.78],
-    jawAngle: [110, 135],
-    weight: [1, 1.2, 1.5, 1],
+    aspect: [1.15, 1.5],     // moderate to elongated
+    forehead: [0.85, 1.08],  // wide forehead (key: wider than jaw)
+    jaw: [0.58, 0.78],       // narrow, pointed chin
+    jawAngle: [105, 140],    // can vary
+    weight: [0.8, 1.2, 1.8, 0.8],
   },
   oblong: {
-    aspect: [1.5, 1.8],
-    forehead: [0.75, 0.92],
-    jaw: [0.7, 0.9],
-    jawAngle: [115, 140],
-    weight: [2, 0.8, 0.8, 0.8],
+    aspect: [1.5, 1.85],     // clearly elongated (key differentiator)
+    forehead: [0.72, 0.94],  // balanced widths
+    jaw: [0.68, 0.92],       // balanced widths
+    jawAngle: [115, 150],    // moderate
+    weight: [2.2, 0.6, 0.6, 0.6],
   },
   diamond: {
-    aspect: [1.2, 1.5],
-    forehead: [0.65, 0.82],
-    jaw: [0.6, 0.8],
-    jawAngle: [115, 140],
-    weight: [1, 1.3, 1.3, 0.8],
+    aspect: [1.15, 1.5],     // moderate
+    forehead: [0.62, 0.82],  // narrow forehead (key: cheekbone widest)
+    jaw: [0.58, 0.80],       // narrow jaw (key: cheekbone widest)
+    jawAngle: [110, 145],    // moderate
+    weight: [0.8, 1.4, 1.4, 0.8],
   },
   triangle: {
-    aspect: [1.1, 1.4],
-    forehead: [0.65, 0.82],
-    jaw: [0.88, 1.1],
-    jawAngle: [115, 140],
-    weight: [0.8, 1.3, 1.5, 0.8],
+    aspect: [1.05, 1.4],     // moderate
+    forehead: [0.62, 0.82],  // narrow forehead
+    jaw: [0.88, 1.12],       // wide jaw (key: jaw > forehead)
+    jawAngle: [110, 145],    // moderate
+    weight: [0.6, 1.4, 1.6, 0.8],
   },
 };
 
