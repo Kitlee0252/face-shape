@@ -1,20 +1,30 @@
+'use client';
+
+import { useState } from 'react';
+import HeroSection from '@/components/home/HeroSection';
+import TrustBar from '@/components/home/TrustBar';
 import FaceDetector from '@/components/detector/FaceDetector';
 
 export default function Home() {
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
   return (
-    <main className="flex min-h-screen flex-col items-center px-4 py-12">
-      <div className="w-full max-w-2xl space-y-6">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-            Face Shape Detector
-          </h1>
-          <p className="mt-2 text-gray-500">
-            Upload a photo to detect your face shape instantly.
-            100% private — everything runs in your browser.
-          </p>
+    <main className="flex-1">
+      {!uploadedFile ? (
+        <>
+          <HeroSection onImage={setUploadedFile} />
+          <TrustBar />
+        </>
+      ) : (
+        <div className="flex flex-col items-center px-4 py-12">
+          <div className="w-full max-w-2xl">
+            <FaceDetector
+              initialFile={uploadedFile}
+              onReset={() => setUploadedFile(null)}
+            />
+          </div>
         </div>
-        <FaceDetector />
-      </div>
+      )}
     </main>
   );
 }

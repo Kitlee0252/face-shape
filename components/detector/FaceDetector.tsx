@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import UploadZone from '@/components/upload/UploadZone';
 import CanvasOverlay from '@/components/detector/CanvasOverlay';
 import FiveAnalysisResults from '@/components/result/FiveAnalysisResults';
@@ -14,6 +14,11 @@ import type { FiveAnalysisResult } from '@/lib/detection/types';
 
 type Status = 'idle' | 'loading' | 'detecting' | 'done' | 'error';
 
+interface FaceDetectorProps {
+  initialFile?: File | null;
+  onReset?: () => void;
+}
+
 function runAnalysis(keypoints: import('@/lib/detection/types').Point[]): FiveAnalysisResult {
   return {
     faceShape: classifyFaceShape(keypoints),
@@ -25,7 +30,7 @@ function runAnalysis(keypoints: import('@/lib/detection/types').Point[]): FiveAn
   };
 }
 
-export default function FaceDetector() {
+export default function FaceDetector({ initialFile, onReset }: FaceDetectorProps) {
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
   const [imageSrc, setImageSrc] = useState('');
@@ -76,13 +81,25 @@ export default function FaceDetector() {
     };
   }, []);
 
+  const initialFileProcessed = useRef(false);
+
+  useEffect(() => {
+    if (initialFile && !initialFileProcessed.current) {
+      initialFileProcessed.current = true;
+      handleImage(initialFile);
+    }
+  }, [initialFile, handleImage]);
+
   const handleReset = useCallback(() => {
     if (imageSrc) URL.revokeObjectURL(imageSrc);
     setStatus('idle');
     setImageSrc('');
     setResult(null);
     setError('');
-  }, [imageSrc]);
+    if (onReset) {
+      onReset();
+    }
+  }, [imageSrc, onReset]);
 
   return (
     <div className="flex flex-col items-center gap-6">
