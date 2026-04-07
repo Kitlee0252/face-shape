@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import FiveAnalysisResults from '@/components/result/FiveAnalysisResults';
+import AnalysisTabs from '@/components/result/AnalysisTabs';
 import RecommendationCard from '@/components/result/RecommendationCard';
 import { HAIRSTYLES } from '@/lib/data/hairstyles';
 import { GLASSES } from '@/lib/data/glasses';
@@ -64,7 +64,7 @@ export default function ResultPage() {
 
         {/* Right: Results + Recommendations */}
         <div>
-          <FiveAnalysisResults result={resultData as FiveAnalysisResult} />
+          <AnalysisTabs result={resultData as FiveAnalysisResult} />
 
           {/* Recommendations */}
           <div className="mt-8 space-y-8">
