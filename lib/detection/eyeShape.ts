@@ -24,8 +24,12 @@ function classifySingleEye(kp: Point[], eye: { inner: number; outer: number; upp
   const upper = kp[eye.upper];
   const lower = kp[eye.lower];
 
-  // Slope: angle of the line from inner corner to outer corner
-  const slopeAngle = Math.atan2(outer.y - inner.y, outer.x - inner.x) * (180 / Math.PI);
+  // Slope: positive = upturned (outer corner higher than inner)
+  // Use abs(dx) to normalize direction — right eye outer is LEFT of inner,
+  // left eye outer is RIGHT of inner. Only the vertical offset matters.
+  const dx = Math.abs(outer.x - inner.x);
+  const dy = inner.y - outer.y; // positive when outer is higher (lower y value)
+  const slopeAngle = Math.atan2(dy, dx) * (180 / Math.PI);
 
   // Size: height / width
   const eyeHeight = distance(upper, lower);
@@ -39,10 +43,9 @@ export function classifyEyeShape(keypoints: Point[]): EyeShapeResult {
   const right = classifySingleEye(keypoints, EYE.right);
   const left = classifySingleEye(keypoints, EYE.left);
 
-  // Average both eyes (left eye angle is mirrored)
-  // Right eye: negative angle = upturned (outer corner higher)
-  // Left eye: positive angle = upturned (outer corner higher)
-  const avgSlopeAngle = (-right.slopeAngle + left.slopeAngle) / 2;
+  // Average both eyes — both now use consistent sign convention
+  // positive = upturned, negative = downturned
+  const avgSlopeAngle = (right.slopeAngle + left.slopeAngle) / 2;
   const avgSizeRatio = (right.sizeRatio + left.sizeRatio) / 2;
   const avgEyeWidth = (right.eyeWidth + left.eyeWidth) / 2;
 

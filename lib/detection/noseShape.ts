@@ -4,7 +4,7 @@
  * Algorithm adapted from zementalist/Facial-Features-Measurement:
  * - Width: nostril span / face width
  * - Length: bridge to tip / face height
- * - Bridge angle: angle at nose tip formed by bridge top and base
+ * - Bridge angle: nose arc angle at tip between nostrils (per zementalist)
  *
  * MediaPipe landmark indices:
  * - Bridge top: 6 (2nd point on FACEMESH_NOSE path)
@@ -51,12 +51,10 @@ export function classifyNoseShape(keypoints: Point[]): NoseShapeResult {
   const widthRatio = noseWidth / faceWidth;
   const lengthRatio = noseLength / faceHeight;
 
-  // Bridge angle: angle at tip formed by bridge top and a point below tip
-  const bridgeAngle = angleDeg(bridgeTop, tip, {
-    x: tip.x,
-    y: tip.y + noseLength * 0.5,
-    z: tip.z,
-  });
+  // Nose arc angle: angle at tip formed by left and right nostrils
+  // Wider nose → larger angle, narrower → smaller
+  // Per zementalist: angle_of_3points(nose_arc[2], nose_arc[0], nose_arc[4])
+  const bridgeAngle = angleDeg(nostrilL, tip, nostrilR);
 
   // Classify width
   let width: NoseWidth;
