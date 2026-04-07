@@ -6,7 +6,9 @@ import TrustBar from '@/components/home/TrustBar';
 import HowItWorks from '@/components/home/HowItWorks';
 import ResultsPreview from '@/components/home/ResultsPreview';
 import ShapeGrid from '@/components/home/ShapeGrid';
+import FAQ from '@/components/home/FAQ';
 import FaceDetector from '@/components/detector/FaceDetector';
+import { SchemaScript, softwareAppSchema } from '@/components/shared/SEOHead';
 
 export default function Home() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -20,6 +22,8 @@ export default function Home() {
           <HowItWorks />
           <ResultsPreview />
           <ShapeGrid />
+          <FAQ />
+          <SchemaScript data={softwareAppSchema()} />
         </>
       ) : (
         <div className="flex flex-col items-center px-4 py-12">
