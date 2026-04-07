@@ -126,4 +126,45 @@ describe('classifyEyeShape', () => {
       expect(result.sizeRatio).toBeCloseTo(0.35, 1);
     });
   });
+
+  describe('shape classification', () => {
+    it('detects round eyes (high size ratio)', () => {
+      const kp = makeEyeKeypoints({ slopeDeg: 0, sizeRatio: 0.42, spacingRatio: 1.0 });
+      const result = classifyEyeShape(kp);
+      expect(result.shape).toBe('round');
+    });
+
+    it('detects almond eyes (medium size ratio)', () => {
+      const kp = makeEyeKeypoints({ slopeDeg: 0, sizeRatio: 0.33, spacingRatio: 1.0 });
+      const result = classifyEyeShape(kp);
+      expect(result.shape).toBe('almond');
+    });
+
+    it('detects narrow eyes (low size ratio)', () => {
+      const kp = makeEyeKeypoints({ slopeDeg: 0, sizeRatio: 0.22, spacingRatio: 1.0 });
+      const result = classifyEyeShape(kp);
+      expect(result.shape).toBe('narrow');
+    });
+  });
+
+  describe('symmetry classification', () => {
+    it('detects excellent symmetry for identical eyes', () => {
+      const kp = makeEyeKeypoints({ slopeDeg: 0, sizeRatio: 0.33, spacingRatio: 1.0 });
+      const result = classifyEyeShape(kp);
+      expect(result.symmetry).toBe('excellent');
+    });
+  });
+
+  describe('detailed measurements', () => {
+    it('includes all raw measurements', () => {
+      const kp = makeEyeKeypoints({ slopeDeg: 0, sizeRatio: 0.33, spacingRatio: 1.0 });
+      const result = classifyEyeShape(kp);
+      expect(result.detailed.avgWidth).toBeGreaterThan(0);
+      expect(result.detailed.avgHeight).toBeGreaterThan(0);
+      expect(result.detailed.distance).toBeGreaterThan(0);
+      expect(result.detailed.leftWidth).toBeGreaterThan(0);
+      expect(result.detailed.rightWidth).toBeGreaterThan(0);
+      expect(result.detailed.aspectRatio).toBeCloseTo(result.detailed.avgWidth / result.detailed.avgHeight, 1);
+    });
+  });
 });

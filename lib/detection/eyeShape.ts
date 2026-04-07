@@ -10,7 +10,7 @@
  * - Right eye: inner 133, outer 33, upper lid 159, lower lid 145
  * - Left eye: inner 362, outer 263, upper lid 386, lower lid 374
  */
-import type { Point, EyeShapeResult, EyeSlope, EyeSize, EyeSpacing } from './types';
+import type { Point, EyeShapeResult, EyeSlope, EyeSize, EyeSpacing, EyeShapeClass, SymmetryLevel } from './types';
 import { distance } from './geometry';
 
 const EYE = {
@@ -36,7 +36,7 @@ function classifySingleEye(kp: Point[], eye: { inner: number; outer: number; upp
   const eyeWidth = distance(inner, outer);
   const sizeRatio = eyeHeight / eyeWidth;
 
-  return { slopeAngle, sizeRatio, eyeWidth };
+  return { slopeAngle, sizeRatio, eyeWidth, eyeHeight };
 }
 
 export function classifyEyeShape(keypoints: Point[]): EyeShapeResult {
@@ -47,11 +47,11 @@ export function classifyEyeShape(keypoints: Point[]): EyeShapeResult {
   // positive = upturned, negative = downturned
   const avgSlopeAngle = (right.slopeAngle + left.slopeAngle) / 2;
   const avgSizeRatio = (right.sizeRatio + left.sizeRatio) / 2;
-  const avgEyeWidth = (right.eyeWidth + left.eyeWidth) / 2;
+  const avgWidth = (right.eyeWidth + left.eyeWidth) / 2;
 
   // Spacing: distance between inner corners / average eye width
   const interEyeDist = distance(keypoints[EYE.right.inner], keypoints[EYE.left.inner]);
-  const spacingRatio = interEyeDist / avgEyeWidth;
+  const spacingRatio = interEyeDist / avgWidth;
 
   // Classify slope
   let slope: EyeSlope;
@@ -71,13 +71,38 @@ export function classifyEyeShape(keypoints: Point[]): EyeShapeResult {
   else if (spacingRatio < 0.85) spacing = 'close-set';
   else spacing = 'standard';
 
+  // Classify shape based on size ratio
+  let shape: EyeShapeClass;
+  if (avgSizeRatio > 0.36) shape = 'round';
+  else if (avgSizeRatio < 0.26) shape = 'narrow';
+  else shape = 'almond';
+
+  // Classify symmetry based on left/right width difference
+  const widthDiff = Math.abs(right.eyeWidth - left.eyeWidth);
+  const symmetryRatio = avgWidth > 0 ? widthDiff / avgWidth : 0;
+  let symmetry: SymmetryLevel;
+  if (symmetryRatio < 0.03) symmetry = 'excellent';
+  else if (symmetryRatio < 0.08) symmetry = 'good';
+  else if (symmetryRatio < 0.15) symmetry = 'moderate';
+  else symmetry = 'asymmetric';
+
   return {
     slope,
     size,
     spacing,
+    shape,
+    symmetry,
     slopeAngle: avgSlopeAngle,
     sizeRatio: avgSizeRatio,
     spacingRatio,
+    detailed: {
+      aspectRatio: avgSizeRatio > 0 ? 1 / avgSizeRatio : 0,
+      avgHeight: (right.eyeHeight + left.eyeHeight) / 2,
+      avgWidth,
+      distance: interEyeDist,
+      leftWidth: left.eyeWidth,
+      rightWidth: right.eyeWidth,
+    },
   };
 }
 
