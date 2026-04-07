@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const navLinks = [
-  { label: "Face Shapes", href: "#shapes" },
-  { label: "How It Works", href: "#how" },
+  { label: "Face Shapes", href: "/#shapes" },
+  { label: "How It Works", href: "/#how" },
   { label: "About", href: "/about" },
 ];
 
@@ -48,7 +48,7 @@ export default function Header() {
             </Link>
           ))}
           <Link
-            href="#try"
+            href="/#try"
             className="bg-primary text-white rounded-full px-5 py-2 text-sm font-semibold hover:opacity-90 transition-opacity"
           >
             Try Now
@@ -100,7 +100,7 @@ export default function Header() {
             </Link>
           ))}
           <Link
-            href="#try"
+            href="/#try"
             className="bg-primary text-white rounded-full px-5 py-2 text-sm font-semibold text-center hover:opacity-90 transition-opacity"
             onClick={() => setMenuOpen(false)}
           >
