@@ -7,6 +7,7 @@ import RecommendationCard from '@/components/result/RecommendationCard';
 import { HAIRSTYLES } from '@/lib/data/hairstyles';
 import { GLASSES } from '@/lib/data/glasses';
 import { MAKEUP } from '@/lib/data/makeup';
+import { getHairstyleImage, getGlassesImage } from '@/lib/utils/imagePaths';
 import type { FiveAnalysisResult } from '@/lib/detection/types';
 import type { FaceShapeType } from '@/lib/detection/types';
 
@@ -101,6 +102,7 @@ export default function ResultPage() {
                       name={item.name}
                       description={item.description}
                       whyItWorks={item.whyItWorks}
+                      imageUrl={shapeType ? getHairstyleImage(shapeType, genderTab, item.name) : undefined}
                     />
                   ))}
                 </div>
@@ -118,6 +120,7 @@ export default function ResultPage() {
                       name={item.name}
                       description={item.style}
                       whyItWorks={item.whyItWorks}
+                      imageUrl={shapeType ? getGlassesImage(shapeType, item.name) : undefined}
                     />
                   ))}
                 </div>

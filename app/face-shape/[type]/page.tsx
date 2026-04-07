@@ -6,7 +6,9 @@ import { GLASSES } from '@/lib/data/glasses';
 import { MAKEUP } from '@/lib/data/makeup';
 import { FACE_SHAPE_LABELS } from '@/lib/detection/types';
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { getShapeImage, getHairstyleImage, getGlassesImage } from '@/lib/utils/imagePaths';
 
 const SHAPES: FaceShapeType[] = [
   'oval',
@@ -107,6 +109,16 @@ export default async function FaceShapeGuidePage({ params }: Props) {
 
       {/* 1. Hero */}
       <section className="py-16 px-4 text-center">
+        <div className="w-28 h-28 rounded-full overflow-hidden mx-auto mb-6 border-2 border-accent/20 bg-white">
+          <Image
+            src={getShapeImage(shapeType)}
+            alt={`${shape.name} face shape outline`}
+            width={112}
+            height={112}
+            className="w-full h-full object-contain"
+            priority
+          />
+        </div>
         <h1 className="text-5xl font-bold font-heading mb-4">
           {shape.name} Face Shape
         </h1>
@@ -162,8 +174,17 @@ export default async function FaceShapeGuidePage({ params }: Props) {
             {hairstyles.female.map((style) => (
               <div
                 key={style.name}
-                className="border border-border rounded-2xl p-4"
+                className="border border-border rounded-2xl p-4 hover:shadow-md transition-shadow"
               >
+                <div className="w-full aspect-square rounded-xl overflow-hidden mb-3">
+                  <Image
+                    src={getHairstyleImage(shapeType, 'female', style.name)}
+                    alt={`${style.name} hairstyle for ${shape.name} face`}
+                    width={300}
+                    height={192}
+                    className="w-full h-full object-cover object-top"
+                  />
+                </div>
                 <p className="text-sm font-semibold">{style.name}</p>
                 <p className="text-xs text-text-secondary mt-1">
                   {style.description}
@@ -185,8 +206,17 @@ export default async function FaceShapeGuidePage({ params }: Props) {
             {hairstyles.male.map((style) => (
               <div
                 key={style.name}
-                className="border border-border rounded-2xl p-4"
+                className="border border-border rounded-2xl p-4 hover:shadow-md transition-shadow"
               >
+                <div className="w-full aspect-square rounded-xl overflow-hidden mb-3">
+                  <Image
+                    src={getHairstyleImage(shapeType, 'male', style.name)}
+                    alt={`${style.name} hairstyle for ${shape.name} face`}
+                    width={300}
+                    height={192}
+                    className="w-full h-full object-cover object-top"
+                  />
+                </div>
                 <p className="text-sm font-semibold">{style.name}</p>
                 <p className="text-xs text-text-secondary mt-1">
                   {style.description}
@@ -209,8 +239,17 @@ export default async function FaceShapeGuidePage({ params }: Props) {
           {glasses.map((g) => (
             <div
               key={g.name}
-              className="border border-border rounded-2xl p-4"
+              className="border border-border rounded-2xl p-4 hover:shadow-md transition-shadow"
             >
+              <div className="w-full aspect-square rounded-xl overflow-hidden mb-3">
+                <Image
+                  src={getGlassesImage(shapeType, g.name)}
+                  alt={`${g.name} glasses for ${shape.name} face`}
+                  width={300}
+                  height={192}
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
               <p className="text-sm font-semibold">{g.name}</p>
               <span className="inline-block text-xs bg-accent-light text-accent-dark px-2 py-0.5 rounded-full mt-1">
                 {g.style}
@@ -334,7 +373,15 @@ export default async function FaceShapeGuidePage({ params }: Props) {
                 href={`/face-shape/${relType}`}
                 className="border border-border rounded-2xl p-6 text-center hover:border-accent hover:shadow-md transition-all w-52"
               >
-                <span className="text-3xl block mb-2">{rel.icon}</span>
+                <div className="w-12 h-12 rounded-full overflow-hidden mx-auto mb-2 bg-white">
+                  <Image
+                    src={getShapeImage(relType)}
+                    alt={`${rel.name} face shape`}
+                    width={48}
+                    height={48}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
                 <p className="font-semibold">
                   {FACE_SHAPE_LABELS[relType]} Face
                 </p>

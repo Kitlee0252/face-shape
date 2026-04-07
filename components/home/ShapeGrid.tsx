@@ -1,33 +1,14 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 const shapes = [
-  { type: 'oval', icon: '🥚', label: 'Oval', desc: 'Balanced proportions' },
-  {
-    type: 'round',
-    icon: '🔵',
-    label: 'Round',
-    desc: 'Equal width & length',
-  },
-  { type: 'square', icon: '⬜', label: 'Square', desc: 'Strong jawline' },
-  {
-    type: 'heart',
-    icon: '💜',
-    label: 'Heart',
-    desc: 'Wide forehead, narrow chin',
-  },
-  { type: 'oblong', icon: '📐', label: 'Oblong', desc: 'Elongated shape' },
-  {
-    type: 'diamond',
-    icon: '💎',
-    label: 'Diamond',
-    desc: 'Wide cheekbones',
-  },
-  {
-    type: 'triangle',
-    icon: '🔺',
-    label: 'Triangle',
-    desc: 'Wide jaw, narrow forehead',
-  },
+  { type: 'oval', label: 'Oval', desc: 'Balanced proportions' },
+  { type: 'round', label: 'Round', desc: 'Equal width & length' },
+  { type: 'square', label: 'Square', desc: 'Strong jawline' },
+  { type: 'heart', label: 'Heart', desc: 'Wide forehead, narrow chin' },
+  { type: 'oblong', label: 'Oblong', desc: 'Elongated shape' },
+  { type: 'diamond', label: 'Diamond', desc: 'Wide cheekbones' },
+  { type: 'triangle', label: 'Triangle', desc: 'Wide jaw, narrow forehead' },
 ];
 
 export default function ShapeGrid() {
@@ -43,8 +24,14 @@ export default function ShapeGrid() {
             href={`/face-shape/${shape.type}`}
             className="border border-border rounded-2xl p-6 text-center hover:border-accent hover:shadow-md transition-all cursor-pointer"
           >
-            <div className="w-14 h-14 bg-surface rounded-full mx-auto mb-3 flex items-center justify-center text-2xl">
-              {shape.icon}
+            <div className="w-14 h-14 rounded-full mx-auto mb-3 overflow-hidden">
+              <Image
+                src={`/images/shapes/${shape.type}.jpg`}
+                alt={`${shape.label} face shape`}
+                width={56}
+                height={56}
+                className="w-full h-full object-contain"
+              />
             </div>
             <div className="text-sm font-semibold">{shape.label}</div>
             <div className="text-xs text-text-tertiary mt-1">{shape.desc}</div>

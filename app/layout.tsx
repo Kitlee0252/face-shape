@@ -27,6 +27,10 @@ export const metadata: Metadata = {
   openGraph: {
     siteName: "FaceShapeAI",
     type: "website",
+    images: [{ url: "/images/og-image.jpg", width: 1200, height: 675 }],
+  },
+  icons: {
+    icon: "/images/favicon.jpg",
   },
 };
 
