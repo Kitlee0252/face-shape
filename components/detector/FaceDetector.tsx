@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import UploadZone from '@/components/upload/UploadZone';
 import { detectLandmarks } from '@/lib/detection/landmarks';
 import { classifyFaceShape } from '@/lib/detection/faceShape';
@@ -29,6 +30,7 @@ function runAnalysis(keypoints: import('@/lib/detection/types').Point[]): FiveAn
 }
 
 export default function FaceDetector({ initialFile, onReset }: FaceDetectorProps) {
+  const router = useRouter();
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
   const [imageSrc, setImageSrc] = useState('');
@@ -103,10 +105,24 @@ export default function FaceDetector({ initialFile, onReset }: FaceDetectorProps
         },
       };
       sessionStorage.setItem('faceResult', JSON.stringify(faceShapeData));
-      sessionStorage.setItem('resultImage', imageSrc);
-      window.location.href = '/result';
+      // Convert blob URL to data URL before navigating (blob URLs are tied to the
+      // document lifetime; using router.push keeps the page alive but it's safer
+      // to store a self-contained data URL so the result page always has the image)
+      const canvas = document.createElement('canvas');
+      const img = new Image();
+      img.onload = () => {
+        const maxW = 800;
+        const scale = img.naturalWidth > maxW ? maxW / img.naturalWidth : 1;
+        canvas.width = Math.round(img.naturalWidth * scale);
+        canvas.height = Math.round(img.naturalHeight * scale);
+        canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+        sessionStorage.setItem('resultImage', canvas.toDataURL('image/jpeg', 0.85));
+        URL.revokeObjectURL(imageSrc);
+        router.push('/result');
+      };
+      img.src = imageSrc;
     }
-  }, [status, result, imageSrc]);
+  }, [status, result, imageSrc, router]);
 
   const handleReset = useCallback(() => {
     if (imageSrc) URL.revokeObjectURL(imageSrc);

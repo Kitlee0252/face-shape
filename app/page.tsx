@@ -1,14 +1,16 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import HeroSection from '@/components/home/HeroSection';
 import TrustBar from '@/components/home/TrustBar';
 import HowItWorks from '@/components/home/HowItWorks';
 import ResultsPreview from '@/components/home/ResultsPreview';
 import ShapeGrid from '@/components/home/ShapeGrid';
 import FAQ from '@/components/home/FAQ';
-import FaceDetector from '@/components/detector/FaceDetector';
 import { SchemaScript, softwareAppSchema } from '@/components/shared/SEOHead';
+
+const FaceDetector = dynamic(() => import('@/components/detector/FaceDetector'), { ssr: false });
 
 export default function Home() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
