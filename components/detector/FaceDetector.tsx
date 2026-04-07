@@ -2,8 +2,6 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import UploadZone from '@/components/upload/UploadZone';
-import CanvasOverlay from '@/components/detector/CanvasOverlay';
-import FiveAnalysisResults from '@/components/result/FiveAnalysisResults';
 import { detectLandmarks } from '@/lib/detection/landmarks';
 import { classifyFaceShape } from '@/lib/detection/faceShape';
 import { classifyEyeShape } from '@/lib/detection/eyeShape';
@@ -90,6 +88,26 @@ export default function FaceDetector({ initialFile, onReset }: FaceDetectorProps
     }
   }, [initialFile, handleImage]);
 
+  // When detection completes, store result in sessionStorage and navigate to /result
+  useEffect(() => {
+    if (status === 'done' && result) {
+      const { keypoints, ...resultData } = result;
+      const faceShapeData = {
+        ...resultData,
+        faceShape: {
+          primary: result.faceShape.primary,
+          secondary: result.faceShape.secondary,
+          all: result.faceShape.all,
+          ratios: result.faceShape.ratios,
+          measurements: result.faceShape.measurements,
+        },
+      };
+      sessionStorage.setItem('faceResult', JSON.stringify(faceShapeData));
+      sessionStorage.setItem('resultImage', imageSrc);
+      window.location.href = '/result';
+    }
+  }, [status, result, imageSrc]);
+
   const handleReset = useCallback(() => {
     if (imageSrc) URL.revokeObjectURL(imageSrc);
     setStatus('idle');
@@ -105,11 +123,15 @@ export default function FaceDetector({ initialFile, onReset }: FaceDetectorProps
     <div className="flex flex-col items-center gap-6">
       {status === 'idle' && <UploadZone onImage={handleImage} />}
 
-      {(status === 'loading' || status === 'detecting') && (
+      {(status === 'loading' || status === 'detecting' || status === 'done') && (
         <div className="flex flex-col items-center gap-3 py-12">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-accent border-t-transparent" />
           <p className="text-sm text-text-secondary">
-            {status === 'loading' ? 'Loading face detection model...' : 'Analyzing your face...'}
+            {status === 'loading'
+              ? 'Loading face detection model...'
+              : status === 'detecting'
+                ? 'Analyzing your face...'
+                : 'Preparing your results...'}
           </p>
         </div>
       )}
@@ -122,19 +144,6 @@ export default function FaceDetector({ initialFile, onReset }: FaceDetectorProps
             className="rounded-full bg-surface px-5 py-2.5 text-sm font-medium text-primary hover:bg-border transition-colors"
           >
             Try again
-          </button>
-        </div>
-      )}
-
-      {status === 'done' && result && (
-        <div className="flex w-full flex-col items-center gap-6">
-          <CanvasOverlay imageSrc={imageSrc} result={result.faceShape} />
-          <FiveAnalysisResults result={result} />
-          <button
-            onClick={handleReset}
-            className="rounded-full bg-surface px-5 py-2.5 text-sm font-medium text-primary hover:bg-border transition-colors"
-          >
-            Try another photo
           </button>
         </div>
       )}
