@@ -12,7 +12,7 @@
  * - Lower lip edge (outer): 17
  * - Face width reference: 234/454
  */
-import type { Point, LipShapeResult, LipThickness, LipWidth } from './types';
+import type { Point, LipShapeResult, LipThickness, LipWidth, CupidBow, LipShapeClass, SymmetryLevel } from './types';
 import { distance } from './geometry';
 
 const LIP = {
@@ -67,12 +67,43 @@ export function classifyLipShape(keypoints: Point[]): LipShapeResult {
   else if (widthRatio < 0.34) width = 'narrow';
   else width = 'medium';
 
+  // Classify cupid's bow (based on upper lip height proportion)
+  const cupidBowRatio = totalHeight > 0 ? upperHeight / totalHeight : 0.5;
+  let cupidBow: CupidBow;
+  if (cupidBowRatio > 0.45) cupidBow = 'pronounced';
+  else if (cupidBowRatio > 0.35) cupidBow = 'moderate';
+  else cupidBow = 'flat';
+
+  // Classify shape
+  let shapeClass: LipShapeClass;
+  if (upperLowerRatio > 1.1) shapeClass = 'top-heavy';
+  else if (upperLowerRatio < 0.65) shapeClass = 'bottom-heavy';
+  else shapeClass = 'balanced';
+
+  // Classify symmetry (based on corner height difference)
+  const cornerHeightDiff = Math.abs(cornerL.y - cornerR.y);
+  const symmetryRatio = lipWidth > 0 ? cornerHeightDiff / lipWidth : 0;
+  let symmetry: SymmetryLevel;
+  if (symmetryRatio < 0.02) symmetry = 'excellent';
+  else if (symmetryRatio < 0.05) symmetry = 'good';
+  else if (symmetryRatio < 0.10) symmetry = 'moderate';
+  else symmetry = 'asymmetric';
+
   return {
     thickness,
     width,
     upperLowerRatio,
     thicknessRatio,
     widthRatio,
+    cupidBow,
+    shapeClass,
+    symmetry,
+    detailed: {
+      height: totalHeight,
+      upperHeight,
+      lowerHeight,
+      width: lipWidth,
+    },
   };
 }
 

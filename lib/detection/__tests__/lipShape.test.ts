@@ -94,4 +94,51 @@ describe('classifyLipShape', () => {
       expect(result.upperLowerRatio).toBeCloseTo(1.0, 1);
     });
   });
+
+  describe('shape classification', () => {
+    it('detects top-heavy lips', () => {
+      const kp = makeLipKeypoints({ thicknessRatio: 0.27, widthRatio: 0.38, upperLowerRatio: 1.3 });
+      const result = classifyLipShape(kp);
+      expect(result.shapeClass).toBe('top-heavy');
+    });
+
+    it('detects balanced lips', () => {
+      const kp = makeLipKeypoints({ thicknessRatio: 0.27, widthRatio: 0.38, upperLowerRatio: 0.9 });
+      const result = classifyLipShape(kp);
+      expect(result.shapeClass).toBe('balanced');
+    });
+
+    it('detects bottom-heavy lips', () => {
+      const kp = makeLipKeypoints({ thicknessRatio: 0.27, widthRatio: 0.38, upperLowerRatio: 0.5 });
+      const result = classifyLipShape(kp);
+      expect(result.shapeClass).toBe('bottom-heavy');
+    });
+  });
+
+  describe('cupid bow classification', () => {
+    it('classifies cupid bow', () => {
+      const kp = makeLipKeypoints({ thicknessRatio: 0.27, widthRatio: 0.38, upperLowerRatio: 0.7 });
+      const result = classifyLipShape(kp);
+      expect(['pronounced', 'moderate', 'flat']).toContain(result.cupidBow);
+    });
+  });
+
+  describe('symmetry', () => {
+    it('detects good symmetry for level corners', () => {
+      const kp = makeLipKeypoints({ thicknessRatio: 0.27, widthRatio: 0.38, upperLowerRatio: 0.7 });
+      const result = classifyLipShape(kp);
+      expect(['excellent', 'good']).toContain(result.symmetry);
+    });
+  });
+
+  describe('detailed measurements', () => {
+    it('includes raw measurements', () => {
+      const kp = makeLipKeypoints({ thicknessRatio: 0.27, widthRatio: 0.38, upperLowerRatio: 0.7 });
+      const result = classifyLipShape(kp);
+      expect(result.detailed.height).toBeGreaterThan(0);
+      expect(result.detailed.upperHeight).toBeGreaterThan(0);
+      expect(result.detailed.lowerHeight).toBeGreaterThan(0);
+      expect(result.detailed.width).toBeGreaterThan(0);
+    });
+  });
 });
