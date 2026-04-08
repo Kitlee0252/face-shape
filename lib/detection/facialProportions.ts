@@ -1,4 +1,5 @@
 import type { Point } from './types';
+import { distance } from './geometry';
 
 const L = {
   foreheadTop: 10,
@@ -93,18 +94,29 @@ function computeFifths(kp: Point[]): FifthsAnalysis {
   return { segments, deviation };
 }
 
+function computeGoldenRatios(kp: Point[], thirds: ThirdsAnalysis): GoldenRatios {
+  const faceHeight = distance(kp[L.foreheadTop], kp[L.chin]);
+  const faceWidth = distance(kp[L.faceEdgeR], kp[L.faceEdgeL]);
+  const mouthWidth = distance(kp[L.mouthCornerL], kp[L.mouthCornerR]);
+  const noseWidth = distance(kp[L.nostrilL], kp[L.nostrilR]);
+  const outerEyeSpan = distance(kp[L.eyeOuterR], kp[L.eyeOuterL]);
+  const innerEyeDist = distance(kp[L.eyeInnerR], kp[L.eyeInnerL]);
+
+  const safe = (n: number, d: number) => d > 0 ? n / d : 0;
+
+  return {
+    faceHeightToWidth: safe(faceHeight, faceWidth),
+    mouthToNoseWidth: safe(mouthWidth, noseWidth),
+    eyeSpanToMouthWidth: safe(outerEyeSpan, mouthWidth),
+    interEyeToNoseWidth: safe(innerEyeDist, noseWidth),
+    midToLowerThird: safe(thirds.middle, thirds.lower),
+  };
+}
+
 export function computeFacialProportions(kp: Point[]): FacialProportions {
   const thirds = computeThirds(kp);
-
   const fifths = computeFifths(kp);
-
-  const goldenRatios: GoldenRatios = {
-    faceHeightToWidth: 0,
-    mouthToNoseWidth: 0,
-    eyeSpanToMouthWidth: 0,
-    interEyeToNoseWidth: 0,
-    midToLowerThird: 0,
-  };
+  const goldenRatios = computeGoldenRatios(kp, thirds);
 
   return { thirds, fifths, goldenRatios };
 }
