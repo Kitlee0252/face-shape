@@ -9,7 +9,7 @@ export default function HowItWorks() {
           <div className="w-10 h-10 rounded-full bg-accent-light text-accent font-bold flex items-center justify-center mx-auto mb-4 text-base">
             1
           </div>
-          <div className="text-base font-semibold mb-2">Upload Photo</div>
+          <h3 className="text-base font-semibold mb-2">Upload Photo</h3>
           <p className="text-sm text-text-secondary leading-relaxed">
             Drop a front-facing photo or use your camera. We never store your
             image.
@@ -19,7 +19,7 @@ export default function HowItWorks() {
           <div className="w-10 h-10 rounded-full bg-accent-light text-accent font-bold flex items-center justify-center mx-auto mb-4 text-base">
             2
           </div>
-          <div className="text-base font-semibold mb-2">AI Analysis</div>
+          <h3 className="text-base font-semibold mb-2">AI Analysis</h3>
           <p className="text-sm text-text-secondary leading-relaxed">
             Our AI maps 478 facial landmarks and analyzes 5 dimensions in under
             3 seconds.
@@ -29,9 +29,9 @@ export default function HowItWorks() {
           <div className="w-10 h-10 rounded-full bg-accent-light text-accent font-bold flex items-center justify-center mx-auto mb-4 text-base">
             3
           </div>
-          <div className="text-base font-semibold mb-2">
+          <h3 className="text-base font-semibold mb-2">
             Get Recommendations
-          </div>
+          </h3>
           <p className="text-sm text-text-secondary leading-relaxed">
             See your face shape with visual overlay, plus personalized style
             recommendations.

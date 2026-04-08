@@ -24,6 +24,7 @@ export const metadata: Metadata = {
   description:
     "Upload your photo to detect your face shape instantly. Get personalized hairstyle, glasses, and makeup recommendations. Free, private, no signup required.",
   metadataBase: new URL("https://faceshapeai.org"),
+  alternates: { canonical: "https://faceshapeai.org" },
   openGraph: {
     siteName: "FaceShapeAI",
     type: "website",
