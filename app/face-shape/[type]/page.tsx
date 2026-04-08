@@ -137,29 +137,7 @@ export default async function FaceShapeGuidePage({ params }: Props) {
         </div>
       </section>
 
-      {/* 2. Celebrities */}
-      <section className="py-12 px-4 bg-background-alt">
-        <h2 className="text-2xl font-bold font-heading text-center mb-8">
-          Celebrities with {shape.name} Face Shape
-        </h2>
-        <div className="flex flex-wrap justify-center gap-6">
-          {shape.celebrities.map((celeb) => (
-            <div key={celeb.name} className="flex flex-col items-center">
-              <div className="w-20 h-20 rounded-full bg-surface flex items-center justify-center mb-2 mx-auto">
-                <span className="text-2xl">{shape.icon}</span>
-              </div>
-              <span className="text-sm font-medium text-center">
-                {celeb.name}
-              </span>
-              <span className="text-xs text-text-tertiary">
-                {celeb.gender === 'female' ? 'Female' : 'Male'}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 3. Hairstyles */}
+      {/* 2. Hairstyles */}
       <section className="py-12 px-4">
         <h2 className="text-2xl font-bold font-heading text-center mb-8">
           Best Hairstyles for {shape.name} Face
