@@ -81,6 +81,7 @@ describe('computeFeatureRatings', () => {
       ratings.eyebrows.overall, ratings.eyebrows.arch, ratings.eyebrows.spacing, ratings.eyebrows.thickness,
       ratings.lips.overall, ratings.lips.cupidBow, ratings.lips.proportion, ratings.lips.shape, ratings.lips.thickness, ratings.lips.width,
       ratings.nose.overall, ratings.nose.bridge, ratings.nose.length, ratings.nose.proportion, ratings.nose.width,
+      ratings.proportions.overall, ratings.proportions.thirds, ratings.proportions.fifths, ratings.proportions.goldenRatio,
       ratings.overall,
     ];
     for (const score of allScores) {
