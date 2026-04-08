@@ -1,15 +1,24 @@
 import type { FiveAnalysisResult } from './types';
+import { computeFacialProportions } from './facialProportions';
 
 export interface EyeRatings { overall: number; shape: number; size: number; spacing: number; symmetry: number; }
 export interface BrowRatings { overall: number; arch: number; spacing: number; thickness: number; }
 export interface LipRatings { overall: number; cupidBow: number; proportion: number; shape: number; thickness: number; width: number; }
 export interface NoseRatings { overall: number; bridge: number; length: number; proportion: number; width: number; }
 
+export interface ProportionRatings {
+  overall: number;
+  thirds: number;
+  fifths: number;
+  goldenRatio: number;
+}
+
 export interface FeatureRatings {
   eyes: EyeRatings;
   eyebrows: BrowRatings;
   lips: LipRatings;
   nose: NoseRatings;
+  proportions: ProportionRatings;
   overall: number;
 }
 
@@ -69,11 +78,42 @@ function rateNose(r: FiveAnalysisResult): NoseRatings {
   return { overall, bridge, length, proportion, width };
 }
 
+function rateProportions(result: FiveAnalysisResult): ProportionRatings {
+  if (!result.keypoints || result.keypoints.length < 478) {
+    return { overall: 7.5, thirds: 7.5, fifths: 7.5, goldenRatio: 7.5 };
+  }
+
+  const props = computeFacialProportions(result.keypoints);
+
+  const thirdsScore = toDisplay(Math.max(0, 1.0 - props.thirds.deviation * 2.5));
+  const fifthsScore = toDisplay(Math.max(0, 1.0 - props.fifths.deviation * 2.5));
+
+  const gr = props.goldenRatios;
+  const grScores = [
+    idealScore(gr.faceHeightToWidth, 1.5, 1.7, 0.2),
+    idealScore(gr.mouthToNoseWidth, 1.45, 1.75, 0.2),
+    idealScore(gr.eyeSpanToMouthWidth, 1.45, 1.75, 0.2),
+    idealScore(gr.interEyeToNoseWidth, 0.9, 1.1, 0.15),
+    idealScore(gr.midToLowerThird, 0.9, 1.1, 0.15),
+  ];
+  const goldenRatio = toDisplay(grScores.reduce((s, v) => s + v, 0) / grScores.length);
+
+  const overall = round1((thirdsScore + fifthsScore + goldenRatio) / 3);
+  return { overall, thirds: thirdsScore, fifths: fifthsScore, goldenRatio };
+}
+
 export function computeFeatureRatings(result: FiveAnalysisResult): FeatureRatings {
   const eyes = rateEyes(result);
   const eyebrows = rateBrows(result);
   const lips = rateLips(result);
   const nose = rateNose(result);
-  const overall = round1(eyes.overall * 0.30 + eyebrows.overall * 0.20 + lips.overall * 0.25 + nose.overall * 0.25);
-  return { eyes, eyebrows, lips, nose, overall };
+  const proportions = rateProportions(result);
+  const overall = round1(
+    eyes.overall * 0.25 +
+    eyebrows.overall * 0.15 +
+    lips.overall * 0.20 +
+    nose.overall * 0.20 +
+    proportions.overall * 0.20
+  );
+  return { eyes, eyebrows, lips, nose, proportions, overall };
 }

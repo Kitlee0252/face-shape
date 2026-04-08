@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { computeFeatureRatings } from '../featureRating';
-import type { FiveAnalysisResult } from '../types';
+import type { FiveAnalysisResult, Point } from '../types';
 
 function makeMockResult(): FiveAnalysisResult {
   return {
@@ -88,4 +88,44 @@ describe('computeFeatureRatings', () => {
       expect(score).toBeLessThanOrEqual(10);
     }
   });
+
+  it('includes proportions ratings', () => {
+    const result = makeMockResult();
+    result.keypoints = makeProportionKeypoints();
+    const ratings = computeFeatureRatings(result);
+    expect(ratings.proportions).toBeDefined();
+    expect(typeof ratings.proportions.overall).toBe('number');
+    expect(typeof ratings.proportions.thirds).toBe('number');
+    expect(typeof ratings.proportions.fifths).toBe('number');
+    expect(typeof ratings.proportions.goldenRatio).toBe('number');
+    expect(ratings.proportions.overall).toBeGreaterThanOrEqual(5);
+    expect(ratings.proportions.overall).toBeLessThanOrEqual(10);
+  });
+
+  it('includes proportions in overall score', () => {
+    const result = makeMockResult();
+    result.keypoints = makeProportionKeypoints();
+    const ratings = computeFeatureRatings(result);
+    expect(ratings.overall).toBeGreaterThanOrEqual(5);
+    expect(ratings.overall).toBeLessThanOrEqual(10);
+  });
 });
+
+function makeProportionKeypoints(): Point[] {
+  const kp: Point[] = Array.from({ length: 478 }, () => ({ x: 200, y: 200, z: 0 }));
+  kp[10]  = { x: 200, y: 0, z: 0 };
+  kp[70]  = { x: 170, y: 100, z: 0 };
+  kp[300] = { x: 230, y: 100, z: 0 };
+  kp[129] = { x: 180, y: 200, z: 0 };
+  kp[358] = { x: 220, y: 200, z: 0 };
+  kp[152] = { x: 200, y: 300, z: 0 };
+  kp[234] = { x: 0, y: 150, z: 0 };
+  kp[33]  = { x: 80, y: 150, z: 0 };
+  kp[133] = { x: 160, y: 150, z: 0 };
+  kp[362] = { x: 240, y: 150, z: 0 };
+  kp[263] = { x: 320, y: 150, z: 0 };
+  kp[454] = { x: 400, y: 150, z: 0 };
+  kp[61]  = { x: 140, y: 250, z: 0 };
+  kp[291] = { x: 260, y: 250, z: 0 };
+  return kp;
+}
