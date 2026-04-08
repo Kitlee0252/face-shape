@@ -88,10 +88,10 @@ export default function TermsPage() {
         <p className="text-text-secondary leading-relaxed mb-4">
           If you have questions about these terms, please contact us at{' '}
           <a
-            href="mailto:hello@faceshapeai.org"
+            href="mailto:lee.xiaoxiong@gmail.com"
             className="text-accent hover:text-accent-dark underline"
           >
-            hello@faceshapeai.org
+            lee.xiaoxiong@gmail.com
           </a>
         </p>
       </div>
