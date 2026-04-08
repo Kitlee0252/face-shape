@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { BLOG_POSTS } from '@/lib/data/blogPosts';
 
 export const metadata: Metadata = {
-  title: 'Face Shape Blog — Tips, Guides & Style Advice | FaceShapeAI',
+  title: 'Face Shape Blog — Styling Tips & Guides',
   description: 'Expert guides on hairstyles, glasses, makeup, and more for every face shape. Find your most flattering look with tips backed by facial geometry.',
   alternates: { canonical: 'https://faceshapeai.org/blog' },
 };

@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const shape = FACE_SHAPES[type as FaceShapeType];
   if (!shape) return {};
   return {
-    title: `${shape.name} Face Shape — Best Hairstyles, Glasses & Tips`,
+    title: `${shape.name} Face Shape — Hairstyles & Tips`,
     description: `${shape.description} Find the best hairstyles, glasses, and makeup tips for ${shape.name.toLowerCase()} face shapes.`,
     alternates: {
       canonical: `https://faceshapeai.org/face-shape/${type}`,

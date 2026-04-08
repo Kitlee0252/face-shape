@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy',
+  title: 'Privacy Policy — Your Photos Stay Private',
   description:
-    'FaceShapeAI privacy policy. Your photos never leave your browser — learn how we protect your data.',
+    'FaceShapeAI processes all photos in your browser — nothing is uploaded to any server. Learn how our face shape detector protects your privacy and data.',
   alternates: { canonical: 'https://faceshapeai.org/privacy' },
 };
 

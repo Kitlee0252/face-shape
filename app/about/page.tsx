@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About',
+  title: 'About — Free AI Face Shape Detection Tool',
   description:
-    'Learn about FaceShapeAI — a free, private, AI-powered face shape detector.',
+    'FaceShapeAI is a free AI tool that detects your face shape in the browser. Get personalized hairstyle, glasses, and makeup tips with full privacy.',
   alternates: { canonical: 'https://faceshapeai.org/about' },
 };
 

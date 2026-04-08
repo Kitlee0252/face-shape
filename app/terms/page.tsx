@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service',
+  title: 'Terms of Service — Usage Guidelines',
   description:
-    'FaceShapeAI terms of service. Read the terms governing your use of our free face shape detection tool.',
+    'Read the terms of service for FaceShapeAI, a free AI face shape detection tool. Covers usage rights, limitations, and your responsibilities as a user.',
   alternates: { canonical: 'https://faceshapeai.org/terms' },
 };
 

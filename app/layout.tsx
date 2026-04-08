@@ -18,7 +18,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "FaceShapeAI — Face Shape Detector",
+    default: "AI Face Shape Detector — Free & Private | FaceShapeAI",
     template: "%s | FaceShapeAI",
   },
   description:
