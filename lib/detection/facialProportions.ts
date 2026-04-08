@@ -66,13 +66,37 @@ function computeThirds(kp: Point[]): ThirdsAnalysis {
   return { upper, middle, lower, deviation };
 }
 
+function computeFifths(kp: Point[]): FifthsAnalysis {
+  const xs = [
+    kp[L.faceEdgeR].x,
+    kp[L.eyeOuterR].x,
+    kp[L.eyeInnerR].x,
+    kp[L.eyeInnerL].x,
+    kp[L.eyeOuterL].x,
+    kp[L.faceEdgeL].x,
+  ].sort((a, b) => a - b);
+
+  const segments: [number, number, number, number, number] = [
+    xs[1] - xs[0],
+    xs[2] - xs[1],
+    xs[3] - xs[2],
+    xs[4] - xs[3],
+    xs[5] - xs[4],
+  ];
+
+  const total = segments.reduce((s, v) => s + v, 0);
+  const ideal = total / 5;
+  const deviation = total > 0
+    ? segments.reduce((s, v) => s + Math.abs(v - ideal), 0) / (5 * ideal)
+    : 0;
+
+  return { segments, deviation };
+}
+
 export function computeFacialProportions(kp: Point[]): FacialProportions {
   const thirds = computeThirds(kp);
 
-  const fifths: FifthsAnalysis = {
-    segments: [0, 0, 0, 0, 0],
-    deviation: 0,
-  };
+  const fifths = computeFifths(kp);
 
   const goldenRatios: GoldenRatios = {
     faceHeightToWidth: 0,
