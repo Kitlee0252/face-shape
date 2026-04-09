@@ -8,7 +8,7 @@ interface ScanningOverlayProps {
 export default function ScanningOverlay({ active, statusText }: ScanningOverlayProps) {
   return (
     <div
-      className={`absolute inset-0 z-10 transition-opacity duration-500 pointer-events-none ${
+      className={`absolute inset-0 z-10 overflow-hidden transition-opacity duration-500 pointer-events-none ${
         active ? 'opacity-100' : 'opacity-0'
       }`}
     >
@@ -18,11 +18,10 @@ export default function ScanningOverlay({ active, statusText }: ScanningOverlayP
       {/* Scanning line */}
       {active && (
         <div
-          className="absolute left-0 right-0 h-[3px] rounded-2xl"
+          className="absolute left-0 right-0 h-[3px] rounded-2xl animate-[scanLine_2s_ease-in-out_infinite]"
           style={{
             background: 'linear-gradient(180deg, transparent 0%, rgba(232,133,108,0.1) 30%, #E8856C 50%, rgba(232,133,108,0.1) 70%, transparent 100%)',
             boxShadow: '0 0 20px 4px rgba(232,133,108,0.4), 0 0 60px 8px rgba(232,133,108,0.15)',
-            animation: 'scanLine 2s ease-in-out infinite',
           }}
         />
       )}
@@ -35,14 +34,6 @@ export default function ScanningOverlay({ active, statusText }: ScanningOverlayP
         </span>
       </div>
 
-      {/* Keyframe animation */}
-      <style jsx>{`
-        @keyframes scanLine {
-          0% { top: 0%; }
-          50% { top: 100%; }
-          100% { top: 0%; }
-        }
-      `}</style>
     </div>
   );
 }
