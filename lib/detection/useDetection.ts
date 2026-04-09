@@ -45,6 +45,7 @@ export function useDetection(imageDataUrl: string | null) {
   useEffect(() => {
     if (!imageDataUrl || ran.current) return;
     ran.current = true;
+    let cancelled = false;
 
     const run = async () => {
       try {
@@ -54,7 +55,7 @@ export function useDetection(imageDataUrl: string | null) {
         const img = await new Promise<HTMLImageElement>((resolve, reject) => {
           const el = new Image();
           el.onload = () => resolve(el);
-          el.onerror = reject;
+          el.onerror = () => reject(new Error('Failed to load image from data URL'));
           el.src = imageDataUrl;
         });
 
@@ -66,13 +67,17 @@ export function useDetection(imageDataUrl: string | null) {
           const canvas = document.createElement('canvas');
           canvas.width = Math.round(img.naturalWidth * scale);
           canvas.height = Math.round(img.naturalHeight * scale);
-          canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+          const ctx = canvas.getContext('2d');
+          if (!ctx) throw new Error('Failed to create canvas context for image resize');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
           source = canvas;
         }
 
+        if (cancelled) return;
         setState((s) => ({ ...s, phase: 'detecting' }));
         const keypoints = await detectLandmarks(source);
 
+        if (cancelled) return;
         if (keypoints.length === 0) {
           setState((s) => ({
             ...s,
@@ -90,8 +95,10 @@ export function useDetection(imageDataUrl: string | null) {
         sessionStorage.setItem('resultImage', imageDataUrl);
         sessionStorage.removeItem('pendingImage');
 
+        if (cancelled) return;
         setState({ phase: 'done', result, keypoints, error: '' });
       } catch (err) {
+        if (cancelled) return;
         setState((s) => ({
           ...s,
           phase: 'error',
@@ -101,6 +108,7 @@ export function useDetection(imageDataUrl: string | null) {
     };
 
     run();
+    return () => { cancelled = true; };
   }, [imageDataUrl]);
 
   return state;
