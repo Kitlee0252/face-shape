@@ -25,7 +25,9 @@ export default function Home() {
         const canvas = document.createElement('canvas');
         canvas.width = Math.round(img.naturalWidth * scale);
         canvas.height = Math.round(img.naturalHeight * scale);
-        canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         URL.revokeObjectURL(url);
 
         sessionStorage.setItem('pendingImage', canvas.toDataURL('image/jpeg', 0.85));
