@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 const navLinks = [
@@ -12,6 +12,11 @@ const navLinks = [
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+
+  const closeMobileMenu = () => {
+    if (detailsRef.current) detailsRef.current.open = false;
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,7 +61,7 @@ export default function Header() {
         </nav>
 
         {/* Mobile menu — uses native <details> so it works without JS */}
-        <details className="md:hidden relative">
+        <details ref={detailsRef} className="md:hidden relative" suppressHydrationWarning>
           <summary className="p-2 list-none cursor-pointer [&::-webkit-details-marker]:hidden">
             <svg
               className="h-6 w-6 text-primary"
@@ -77,6 +82,7 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={closeMobileMenu}
                 className="text-sm text-text-secondary hover:text-primary transition-colors px-2 py-1"
               >
                 {link.label}
@@ -84,6 +90,7 @@ export default function Header() {
             ))}
             <Link
               href="/#try"
+              onClick={closeMobileMenu}
               className="bg-primary text-white rounded-full px-5 py-2 text-sm font-semibold text-center hover:opacity-90 transition-opacity mt-1"
             >
               Try Now
