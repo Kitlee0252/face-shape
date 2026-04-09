@@ -15,6 +15,9 @@ interface DetectionState {
   phase: DetectionPhase;
   result: FiveAnalysisResult | null;
   keypoints: Point[];
+  /** Dimensions of the source used for detection (keypoints are in this coordinate space) */
+  sourceWidth: number;
+  sourceHeight: number;
   error: string;
 }
 
@@ -38,6 +41,8 @@ export function useDetection(imageDataUrl: string | null) {
     phase: 'idle',
     result: null,
     keypoints: [],
+    sourceWidth: 0,
+    sourceHeight: 0,
     error: '',
   });
   const ran = useRef(false);
@@ -95,8 +100,12 @@ export function useDetection(imageDataUrl: string | null) {
         sessionStorage.setItem('resultImage', imageDataUrl);
         sessionStorage.removeItem('pendingImage');
 
+        // Record detection source dimensions so CanvasOverlay can scale correctly
+        const sourceWidth = source instanceof HTMLCanvasElement ? source.width : source.naturalWidth;
+        const sourceHeight = source instanceof HTMLCanvasElement ? source.height : source.naturalHeight;
+
         if (cancelled) return;
-        setState({ phase: 'done', result, keypoints, error: '' });
+        setState({ phase: 'done', result, keypoints, sourceWidth, sourceHeight, error: '' });
       } catch (err) {
         if (cancelled) return;
         setState((s) => ({

@@ -133,14 +133,14 @@ export default function ResultPage() {
             <ScanningOverlay active={isDetecting} statusText={statusText} />
 
             {/* Landmark canvas overlay */}
-            {showLandmarks && resultData && imgDims.nw > 0 && (
+            {showLandmarks && resultData && detection.sourceWidth > 0 && (
               <CanvasOverlay
                 keypoints={detection.keypoints}
                 ratios={resultData.faceShape.ratios}
                 containerWidth={imgDims.w}
                 containerHeight={imgDims.h}
-                imageNaturalWidth={imgDims.nw}
-                imageNaturalHeight={imgDims.nh}
+                imageNaturalWidth={detection.sourceWidth}
+                imageNaturalHeight={detection.sourceHeight}
                 visible={showLandmarks}
               />
             )}
