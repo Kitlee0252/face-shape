@@ -1,7 +1,8 @@
+// app/page.tsx
 'use client';
 
-import { useState } from 'react';
-import dynamic from 'next/dynamic';
+import { useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import HeroSection from '@/components/home/HeroSection';
 import TrustBar from '@/components/home/TrustBar';
 import HowItWorks from '@/components/home/HowItWorks';
@@ -10,33 +11,40 @@ import ShapeGrid from '@/components/home/ShapeGrid';
 import FAQ from '@/components/home/FAQ';
 import { SchemaScript, softwareAppSchema } from '@/components/shared/SEOHead';
 
-const FaceDetector = dynamic(() => import('@/components/detector/FaceDetector'), { ssr: false });
-
 export default function Home() {
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const router = useRouter();
+
+  const handleImage = useCallback(
+    (file: File) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        // Resize to max 800px and compress as JPEG to fit sessionStorage
+        const maxW = 800;
+        const scale = img.naturalWidth > maxW ? maxW / img.naturalWidth : 1;
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.naturalWidth * scale);
+        canvas.height = Math.round(img.naturalHeight * scale);
+        canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(url);
+
+        sessionStorage.setItem('pendingImage', canvas.toDataURL('image/jpeg', 0.85));
+        router.push('/result');
+      };
+      img.src = url;
+    },
+    [router]
+  );
 
   return (
     <main className="flex-1">
-      {!uploadedFile ? (
-        <>
-          <HeroSection onImage={setUploadedFile} />
-          <TrustBar />
-          <HowItWorks />
-          <ResultsPreview />
-          <ShapeGrid />
-          <FAQ />
-          <SchemaScript data={softwareAppSchema()} />
-        </>
-      ) : (
-        <div className="flex flex-col items-center px-4 py-12">
-          <div className="w-full max-w-2xl">
-            <FaceDetector
-              initialFile={uploadedFile}
-              onReset={() => setUploadedFile(null)}
-            />
-          </div>
-        </div>
-      )}
+      <HeroSection onImage={handleImage} />
+      <TrustBar />
+      <HowItWorks />
+      <ResultsPreview />
+      <ShapeGrid />
+      <FAQ />
+      <SchemaScript data={softwareAppSchema()} />
     </main>
   );
 }
