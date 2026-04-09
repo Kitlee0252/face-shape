@@ -1,7 +1,7 @@
 // app/result/page.tsx
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import AnalysisTabs from '@/components/result/AnalysisTabs';
 import AnalysisSkeleton from '@/components/result/AnalysisSkeleton';
@@ -23,7 +23,6 @@ export default function ResultPage() {
 
   // Image dimensions for canvas overlay
   const imgRef = useRef<HTMLImageElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const [imgDims, setImgDims] = useState({ w: 0, h: 0, nw: 0, nh: 0 });
 
   const [genderTab, setGenderTab] = useState<'female' | 'male'>('female');
@@ -52,7 +51,7 @@ export default function ResultPage() {
   const showLandmarks = detection.phase === 'done' && detection.keypoints.length > 0;
 
   // Track image rendered dimensions for canvas overlay
-  const updateImgDims = () => {
+  const updateImgDims = useCallback(() => {
     const el = imgRef.current;
     if (el) {
       setImgDims({
@@ -62,12 +61,12 @@ export default function ResultPage() {
         nh: el.naturalHeight,
       });
     }
-  };
+  }, []);
 
   useEffect(() => {
     window.addEventListener('resize', updateImgDims);
     return () => window.removeEventListener('resize', updateImgDims);
-  }, []);
+  }, [updateImgDims]);
 
   // Status text for scanning overlay
   const statusText =
@@ -119,7 +118,7 @@ export default function ResultPage() {
       <div className="max-w-5xl mx-auto lg:grid lg:grid-cols-[400px_1fr] lg:gap-8">
         {/* Left: Image with overlays */}
         <div className="lg:sticky lg:top-24 lg:self-start mb-8 lg:mb-0">
-          <div ref={containerRef} className="relative">
+          <div className="relative">
             {imageUrl && (
               <img
                 ref={imgRef}
