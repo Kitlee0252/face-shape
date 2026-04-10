@@ -14,27 +14,24 @@ export type FaceShapeType =
   | 'triangle';
 
 export interface FaceMeasurements {
-  foreheadWidth: number;
   cheekboneWidth: number;
-  jawWidth: number;
   faceHeight: number;
   chinAngle: number; // degrees — angle at chin (152) between jaw points (58/288)
-  jawlineCurvature: number; // avg perpendicular deviation of jawline points (px)
 }
 
 export interface FaceRatios {
   /** Face height / cheekbone width */
   aspectRatio: number;
-  /** Forehead width / cheekbone width */
-  foreheadRatio: number;
-  /** Jaw width / cheekbone width */
-  jawRatio: number;
-  /** Chin angle in degrees — measures chin pointedness */
+  /** Chin angle in degrees */
   chinAngle: number;
-  /** (foreheadWidth - jawWidth) / faceHeight — positive = forehead wider */
-  widthGradient: number;
-  /** Jawline curvature: avg deviation / jaw-to-chin distance. High = round, low = square */
-  jawlineCurvature: number;
+  /** Position of widest contour slice (0=top, 1=chin) */
+  peakPosition: number;
+  /** Upper-half avg width / lower-half avg width */
+  topBottomRatio: number;
+  /** Width decrease from peak to chin (0=none, 1=full) */
+  taperRate: number;
+  /** Width uniformity in middle section (1=perfectly flat) */
+  flatness: number;
 }
 
 export interface FaceShapeScore {
