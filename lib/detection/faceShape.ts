@@ -70,11 +70,11 @@ const SHAPE_RULES: Record<
     weight: [1.5, 0.8, 0.8, 1.3],
   },
   square: {
-    aspect: [1.0, 1.3],      // can be short or moderate
+    aspect: [1.0, 1.25],     // width ≈ height (tighter than before)
     forehead: [0.85, 1.02],  // wide forehead
-    jaw: [0.88, 1.05],       // jaw nearly as wide as cheekbone
-    jawAngle: [95, 130],     // angular, strong jaw (< 130°)
-    weight: [0.8, 0.8, 1.3, 1.8],
+    jaw: [0.90, 1.05],       // jaw clearly wide (key differentiator)
+    jawAngle: [95, 122],     // truly angular jaw only (was [95,130])
+    weight: [1.2, 0.8, 1.5, 1.2],  // balanced: jaw width matters most, jawAngle no longer dominant
   },
   heart: {
     aspect: [1.15, 1.5],     // moderate to elongated
