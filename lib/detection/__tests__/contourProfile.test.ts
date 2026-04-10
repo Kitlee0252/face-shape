@@ -121,10 +121,10 @@ describe('extractContourFeatures', () => {
     expect(f.topBottomRatio).toBeGreaterThanOrEqual(0.85);
     expect(f.topBottomRatio).toBeLessThanOrEqual(1.15);
 
-    // A perfect ellipse converges to a point at chin, giving taperRate ~1.0.
-    // Real faces have a wider chin, so this range covers both synthetic and real.
-    expect(f.taperRate).toBeGreaterThanOrEqual(0.3);
-    expect(f.taperRate).toBeLessThanOrEqual(1.0);
+    // taperRate now measures to jaw (h=0.8), not chin. For a symmetric ellipse
+    // the jaw-level width is still substantial, so taper is moderate.
+    expect(f.taperRate).toBeGreaterThanOrEqual(0.1);
+    expect(f.taperRate).toBeLessThanOrEqual(0.6);
 
     expect(f.flatness).toBeGreaterThanOrEqual(0.7);
     expect(f.flatness).toBeLessThanOrEqual(0.95);

@@ -126,24 +126,24 @@ function makeContourFace(
 describe('classifyFaceShape', () => {
   describe('returns correct primary type for ideal shapes', () => {
     it('classifies oval face', () => {
-      // Moderate aspect, balanced widths, moderate taper
-      const kp = makeContourFace(1.38, 115, 1.0, 1.0, 0.4);
+      // Moderate aspect, slightly wider top (real faces always have topBottom > 1.05)
+      const kp = makeContourFace(1.38, 115, 1.1, 0.95, 0.4);
       const result = classifyFaceShape(kp);
       expect(result.primary.type).toBe('oval');
       expect(result.primary.confidence).toBeGreaterThan(0.5);
     });
 
     it('classifies round face', () => {
-      // Low aspect, wide chin angle, uniform widths, high flatness
-      const kp = makeContourFace(1.12, 130, 1.0, 1.0, 0.45);
+      // Low aspect, wide chin angle, slightly wider top (realistic)
+      const kp = makeContourFace(1.12, 130, 1.1, 0.95, 0.45);
       const result = classifyFaceShape(kp);
       expect(result.primary.type).toBe('round');
       expect(result.primary.confidence).toBeGreaterThan(0.5);
     });
 
     it('classifies square face', () => {
-      // Low aspect, sharp chin angle, low taper, high flatness
-      const kp = makeContourFace(1.12, 95, 1.0, 1.0, 0.45);
+      // Low aspect, sharp chin angle, wide jaw (bottomScale high), slightly wider top
+      const kp = makeContourFace(1.12, 95, 1.08, 1.05, 0.45);
       const result = classifyFaceShape(kp);
       expect(result.primary.type).toBe('square');
       expect(result.primary.confidence).toBeGreaterThan(0.5);
@@ -158,8 +158,8 @@ describe('classifyFaceShape', () => {
     });
 
     it('classifies oblong face', () => {
-      // Very high aspect ratio, balanced widths
-      const kp = makeContourFace(1.65, 115, 1.0, 1.0, 0.4);
+      // Very high aspect ratio, slightly wider top (realistic)
+      const kp = makeContourFace(1.65, 115, 1.1, 0.95, 0.4);
       const result = classifyFaceShape(kp);
       expect(result.primary.type).toBe('oblong');
       expect(result.primary.confidence).toBeGreaterThan(0.5);
@@ -235,10 +235,10 @@ describe('classifyFaceShape', () => {
 
     it('round vs square by taperRate and chinAngle', () => {
       const round = classifyFaceShape(
-        makeContourFace(1.12, 130, 1.0, 1.0, 0.45)
+        makeContourFace(1.12, 130, 1.1, 0.95, 0.45)
       );
       const square = classifyFaceShape(
-        makeContourFace(1.12, 95, 1.0, 1.0, 0.45)
+        makeContourFace(1.12, 95, 1.08, 1.05, 0.45)
       );
       expect(round.primary.type).toBe('round');
       expect(square.primary.type).toBe('square');
@@ -246,10 +246,10 @@ describe('classifyFaceShape', () => {
 
     it('oval vs oblong by aspectRatio', () => {
       const oval = classifyFaceShape(
-        makeContourFace(1.38, 115, 1.0, 1.0, 0.4)
+        makeContourFace(1.38, 115, 1.1, 0.95, 0.4)
       );
       const oblong = classifyFaceShape(
-        makeContourFace(1.65, 115, 1.0, 1.0, 0.4)
+        makeContourFace(1.65, 115, 1.1, 0.95, 0.4)
       );
       expect(oval.primary.type).toBe('oval');
       expect(oblong.primary.type).toBe('oblong');

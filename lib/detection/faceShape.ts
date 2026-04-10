@@ -42,21 +42,25 @@ const SHAPE_RULES: Record<
     weight: [number, number, number, number, number, number];
   }
 > = {
+  // Calibrated from real data (13 photos):
+  //   topBottomRatio: 1.06-1.31 (all faces have wider upper half)
+  //   taperRate: now measures to jaw (h=0.8), not chin — expect meaningful variation
+  //   peakPosition: 0.30-0.50, flatness: 0.88-0.94, chinAngle: 96-113°
   oval: {
     aspect: [1.25, 1.5],
     chinAngle: [95, 135],
     peakPosition: [0.3, 0.5],
-    topBottomRatio: [0.95, 1.10],
-    taperRate: [0.55, 0.70],
-    flatness: [0.82, 0.90],
+    topBottomRatio: [1.05, 1.20],  // moderate (shifted up from real data)
+    taperRate: [0.25, 0.50],       // recalibrated for jaw-level taper
+    flatness: [0.82, 0.92],
     weight: [1, 1, 1, 1, 1, 1],
   },
   round: {
     aspect: [1.0, 1.25],
     chinAngle: [100, 155],
     peakPosition: [0.3, 0.5],
-    topBottomRatio: [0.95, 1.10],
-    taperRate: [0.40, 0.60],
+    topBottomRatio: [1.05, 1.18],  // balanced-ish
+    taperRate: [0.15, 0.35],       // low: wide jaw, gradual taper
     flatness: [0.88, 0.96],
     weight: [1, 1, 1, 1, 1, 1],
   },
@@ -64,8 +68,8 @@ const SHAPE_RULES: Record<
     aspect: [1.0, 1.25],
     chinAngle: [85, 105],
     peakPosition: [0.3, 0.5],
-    topBottomRatio: [0.95, 1.10],
-    taperRate: [0.30, 0.50],
+    topBottomRatio: [1.00, 1.15],  // most balanced: jaw almost as wide as upper
+    taperRate: [0.05, 0.25],       // lowest: jaw stays wide
     flatness: [0.88, 0.96],
     weight: [1, 1, 1, 1, 1, 1],
   },
@@ -73,17 +77,17 @@ const SHAPE_RULES: Record<
     aspect: [1.15, 1.5],
     chinAngle: [90, 125],
     peakPosition: [0.2, 0.4],
-    topBottomRatio: [1.10, 1.35],
-    taperRate: [0.70, 0.90],
-    flatness: [0.78, 0.88],
+    topBottomRatio: [1.20, 1.40],  // highest: clearly wider top (key)
+    taperRate: [0.40, 0.65],       // high: narrows significantly toward jaw
+    flatness: [0.78, 0.90],
     weight: [1, 1, 1, 1, 1, 1],
   },
   oblong: {
     aspect: [1.5, 1.85],
     chinAngle: [95, 135],
     peakPosition: [0.3, 0.5],
-    topBottomRatio: [0.95, 1.10],
-    taperRate: [0.55, 0.75],
+    topBottomRatio: [1.05, 1.20],
+    taperRate: [0.25, 0.50],
     flatness: [0.82, 0.92],
     weight: [1, 1, 1, 1, 1, 1],
   },
@@ -91,18 +95,18 @@ const SHAPE_RULES: Record<
     aspect: [1.15, 1.5],
     chinAngle: [90, 130],
     peakPosition: [0.25, 0.45],
-    topBottomRatio: [0.90, 1.10],
-    taperRate: [0.60, 0.80],
-    flatness: [0.72, 0.84],
+    topBottomRatio: [1.05, 1.22],  // moderate: cheekbones widest but both ends narrow
+    taperRate: [0.35, 0.55],
+    flatness: [0.72, 0.86],        // lowest: peaked in middle
     weight: [1, 1, 1, 1, 1, 1],
   },
   triangle: {
     aspect: [1.05, 1.4],
     chinAngle: [90, 130],
-    peakPosition: [0.45, 0.65],
-    topBottomRatio: [0.75, 0.92],
-    taperRate: [0.25, 0.50],
-    flatness: [0.80, 0.90],
+    peakPosition: [0.35, 0.60],    // peak lower than heart
+    topBottomRatio: [0.85, 1.05],  // lowest: jaw wider or equal to upper (key)
+    taperRate: [0.05, 0.25],       // low: jaw stays wide like square
+    flatness: [0.80, 0.92],
     weight: [1, 1, 1, 1, 1, 1],
   },
 };

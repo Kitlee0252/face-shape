@@ -110,7 +110,7 @@ export interface ContourFeatures {
   peakPosition: number;
   /** mean(widths[0..5]) / mean(widths[5..10]) -- upper-half vs lower-half. */
   topBottomRatio: number;
-  /** (peakWidth - chinWidth) / peakWidth -- how much the face tapers. */
+  /** (peakWidth - jawWidth) / peakWidth -- taper from peak to jaw (h=0.8). */
   taperRate: number;
   /** 1 - std(widths[2..8]) / mean(widths[2..8]) -- uniformity of middle widths. */
   flatness: number;
@@ -146,10 +146,11 @@ export function extractContourFeatures(keypoints: Point[]): ContourFeatures {
   const topBottomRatio =
     mean(lowerHalf) > 0 ? mean(upperHalf) / mean(lowerHalf) : 1;
 
-  // taperRate: (peak - chin) / peak
+  // taperRate: (peak - jaw) / peak — use h=0.8 (index 8) instead of chin (index 10)
+  // because the chin point converges to zero width for all faces, giving taperRate=1.0 always
   const peakWidth = widths[peakIdx];
-  const chinWidth = widths[widths.length - 1];
-  const taperRate = peakWidth > 0 ? (peakWidth - chinWidth) / peakWidth : 0;
+  const jawWidth = widths[8]; // h=0.8, jaw/lower-cheek area
+  const taperRate = peakWidth > 0 ? (peakWidth - jawWidth) / peakWidth : 0;
 
   // flatness: 1 - cv of middle widths (indices 2..8)
   const middle = widths.slice(2, 9); // indices 2..8 inclusive
