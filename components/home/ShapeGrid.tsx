@@ -33,7 +33,7 @@ export default function ShapeGrid() {
                 className="w-full h-full object-contain"
               />
             </div>
-            <div className="text-sm font-semibold">{shape.label}</div>
+            <h3 className="text-sm font-semibold">{shape.label}</h3>
             <div className="text-xs text-text-tertiary mt-1">{shape.desc}</div>
           </Link>
         ))}

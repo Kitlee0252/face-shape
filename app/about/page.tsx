@@ -29,26 +29,43 @@ export default function AboutPage() {
         <h2 className="font-heading text-xl font-semibold mb-3 mt-8">
           How It Works
         </h2>
+        <h3 className="text-base font-semibold mb-2 mt-4">
+          478-Point Facial Landmark Detection
+        </h3>
         <p className="text-text-secondary leading-relaxed mb-4">
           Our detector uses MediaPipe FaceLandmarker to map 478 precise facial
           landmarks on your photo. From there, a rule-based classification system
           analyzes geometric proportions — widths, ratios, and angles — to
           determine your face shape from seven possible types: oval, round,
-          square, heart, oblong, diamond, and triangle. The same landmark data
-          powers our eye, nose, lip, and eyebrow analysis. All processing
-          happens entirely in your browser.
+          square, heart, oblong, diamond, and triangle.
+        </p>
+        <h3 className="text-base font-semibold mb-2 mt-4">
+          Five-Dimension Analysis
+        </h3>
+        <p className="text-text-secondary leading-relaxed mb-4">
+          The same landmark data powers our eye, nose, lip, and eyebrow
+          analysis. All processing happens entirely in your browser.
         </p>
 
         <h2 className="font-heading text-xl font-semibold mb-3 mt-8">
           Privacy First
         </h2>
+        <h3 className="text-base font-semibold mb-2 mt-4">
+          Zero Server Uploads
+        </h3>
         <p className="text-text-secondary leading-relaxed mb-4">
           Your photos never leave your browser. There are zero server uploads, no
           accounts to create, and no personal data collection of any kind. Every
           step of the detection and analysis pipeline runs client-side using
-          WebAssembly and JavaScript. Don&apos;t take our word for it — open your
-          browser&apos;s DevTools Network tab while using the tool and verify for
-          yourself that no image data is transmitted.
+          WebAssembly and JavaScript.
+        </p>
+        <h3 className="text-base font-semibold mb-2 mt-4">
+          Verify It Yourself
+        </h3>
+        <p className="text-text-secondary leading-relaxed mb-4">
+          Don&apos;t take our word for it — open your browser&apos;s DevTools
+          Network tab while using the tool and verify for yourself that no image
+          data is transmitted.
         </p>
 
         <h2 className="font-heading text-xl font-semibold mb-3 mt-8">

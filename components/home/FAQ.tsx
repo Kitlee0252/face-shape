@@ -74,9 +74,9 @@ export default function FAQ() {
               onClick={() => setOpenIndex(openIndex === i ? null : i)}
               aria-expanded={openIndex === i}
             >
-              <span className="text-sm font-semibold text-primary pr-4">
+              <h3 className="text-sm font-semibold text-primary pr-4">
                 {item.question}
-              </span>
+              </h3>
               <svg
                 className={`w-5 h-5 shrink-0 text-text-secondary transition-transform duration-200 ${
                   openIndex === i ? 'rotate-180' : ''

@@ -38,9 +38,9 @@ export default function ResultsPreview() {
         <div className="flex-1 flex flex-col gap-3">
           {/* Card 1 — Face Shape */}
           <div className="bg-white rounded-2xl border border-border p-4">
-            <div className="text-[11px] text-text-tertiary uppercase tracking-wide">
+            <h3 className="text-[11px] text-text-tertiary uppercase tracking-wide font-normal">
               Face Shape
-            </div>
+            </h3>
             <div className="flex items-center justify-between mt-1">
               <span className="text-xl font-bold font-heading">Oval</span>
               <span className="text-sm font-semibold text-accent">87%</span>
@@ -52,9 +52,9 @@ export default function ResultsPreview() {
 
           {/* Card 2 — Feature Ratings */}
           <div className="bg-white rounded-2xl border border-border p-4">
-            <div className="text-[11px] text-text-tertiary uppercase tracking-wide mb-3">
+            <h3 className="text-[11px] text-text-tertiary uppercase tracking-wide mb-3 font-normal">
               Feature Ratings
-            </div>
+            </h3>
             <div className="space-y-2">
               {PREVIEW_RATINGS.map((r) => (
                 <div key={r.label} className="flex items-center gap-2">
@@ -73,9 +73,9 @@ export default function ResultsPreview() {
 
           {/* Card 3 — Detailed Analysis */}
           <div className="bg-white rounded-2xl border border-border p-4">
-            <div className="text-[11px] text-text-tertiary uppercase tracking-wide mb-2">
+            <h3 className="text-[11px] text-text-tertiary uppercase tracking-wide mb-2 font-normal">
               Detailed Analysis
-            </div>
+            </h3>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
               <div className="flex justify-between">
                 <span className="text-text-secondary">Shape</span>
@@ -98,9 +98,9 @@ export default function ResultsPreview() {
 
           {/* Card 4 — Recommendations */}
           <div className="bg-white rounded-2xl border border-border p-4">
-            <div className="text-[11px] text-text-tertiary uppercase tracking-wide mb-2">
+            <h3 className="text-[11px] text-text-tertiary uppercase tracking-wide mb-2 font-normal">
               Personalized Recommendations
-            </div>
+            </h3>
             <div className="flex gap-2 flex-wrap">
               <span className="bg-accent-light text-accent-dark text-[11px] font-medium px-2.5 py-1 rounded-full">
                 Hairstyles
