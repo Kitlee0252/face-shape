@@ -27,7 +27,6 @@ const CONTOUR_GROUPS: { connections: { start: number; end: number }[]; color: st
 
 const MEASUREMENT_LINES: { label: string; from: number; to: number; color: string }[] = [
   { label: 'Face height', from: LANDMARKS.foreheadTop, to: LANDMARKS.chin, color: '#ef4444' },
-  { label: 'Forehead', from: LANDMARKS.foreheadLeft, to: LANDMARKS.foreheadRight, color: '#eab308' },
   { label: 'Cheekbone', from: LANDMARKS.cheekboneLeft, to: LANDMARKS.cheekboneRight, color: '#22d3ee' },
   { label: 'Jaw', from: LANDMARKS.jawLeft, to: LANDMARKS.jawRight, color: '#a855f7' },
 ];

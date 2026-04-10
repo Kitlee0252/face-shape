@@ -40,8 +40,10 @@ function normalizeResult(result: FiveAnalysisResult): FiveAnalysisResult {
       ...face,
       ratios: {
         ...face.ratios,
-        widthGradient: face.ratios.widthGradient ?? 0,
-        jawlineCurvature: face.ratios.jawlineCurvature ?? 0,
+        peakPosition: face.ratios.peakPosition ?? 0,
+        topBottomRatio: face.ratios.topBottomRatio ?? 1,
+        taperRate: face.ratios.taperRate ?? 0,
+        flatness: face.ratios.flatness ?? 0,
       },
     },
     eyeShape: {
@@ -158,11 +160,11 @@ function ShapeTab({ result }: Props) {
       {/* Ratio stats */}
       <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-5">
         <StatBox label="Aspect" value={ratios.aspectRatio.toFixed(2)} />
-        <StatBox label="Forehead" value={ratios.foreheadRatio.toFixed(2)} />
-        <StatBox label="Jaw" value={ratios.jawRatio.toFixed(2)} />
         <StatBox label="Chin Angle" value={`${Math.round(ratios.chinAngle)}\u00B0`} />
-        <StatBox label="Gradient" value={ratios.widthGradient.toFixed(2)} />
-        <StatBox label="Jawline" value={ratios.jawlineCurvature.toFixed(2)} />
+        <StatBox label="Peak Pos" value={ratios.peakPosition.toFixed(2)} />
+        <StatBox label="Top/Bottom" value={ratios.topBottomRatio.toFixed(2)} />
+        <StatBox label="Taper" value={ratios.taperRate.toFixed(2)} />
+        <StatBox label="Flatness" value={ratios.flatness.toFixed(2)} />
       </div>
 
       {/* All 7 shape scores */}
