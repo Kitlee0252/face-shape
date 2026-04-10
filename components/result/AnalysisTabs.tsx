@@ -33,8 +33,17 @@ function normalizeResult(result: FiveAnalysisResult): FiveAnalysisResult {
   const lip = result.lipShape;
   const nose = result.noseShape;
 
+  const face = result.faceShape;
   return {
     ...result,
+    faceShape: {
+      ...face,
+      ratios: {
+        ...face.ratios,
+        widthGradient: face.ratios.widthGradient ?? 0,
+        jawlineCurvature: face.ratios.jawlineCurvature ?? 0,
+      },
+    },
     eyeShape: {
       ...eye,
       shape: eye.shape ?? 'almond',
@@ -147,11 +156,13 @@ function ShapeTab({ result }: Props) {
       </div>
 
       {/* Ratio stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-5">
         <StatBox label="Aspect" value={ratios.aspectRatio.toFixed(2)} />
         <StatBox label="Forehead" value={ratios.foreheadRatio.toFixed(2)} />
         <StatBox label="Jaw" value={ratios.jawRatio.toFixed(2)} />
-        <StatBox label="Jaw Angle" value={`${Math.round(ratios.jawAngle)}\u00B0`} />
+        <StatBox label="Chin Angle" value={`${Math.round(ratios.chinAngle)}\u00B0`} />
+        <StatBox label="Gradient" value={ratios.widthGradient.toFixed(2)} />
+        <StatBox label="Jawline" value={ratios.jawlineCurvature.toFixed(2)} />
       </div>
 
       {/* All 7 shape scores */}

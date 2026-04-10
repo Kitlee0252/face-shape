@@ -7,6 +7,7 @@ import { classifyEyeShape } from '@/lib/detection/eyeShape';
 import { classifyNoseShape } from '@/lib/detection/noseShape';
 import { classifyLipShape } from '@/lib/detection/lipShape';
 import { classifyEyebrowShape } from '@/lib/detection/eyebrowShape';
+import { estimateHeadPose } from '@/lib/detection/headPose';
 import type { FiveAnalysisResult, Point } from '@/lib/detection/types';
 
 export type DetectionPhase = 'idle' | 'loading' | 'detecting' | 'done' | 'error';
@@ -19,6 +20,8 @@ interface DetectionState {
   sourceWidth: number;
   sourceHeight: number;
   error: string;
+  /** Head pose warning (null = ok) */
+  poseWarning: string | null;
 }
 
 function runAnalysis(keypoints: Point[]): FiveAnalysisResult {
@@ -44,6 +47,7 @@ export function useDetection(imageDataUrl: string | null) {
     sourceWidth: 0,
     sourceHeight: 0,
     error: '',
+    poseWarning: null,
   });
   const processedUrl = useRef<string | null>(null);
 
@@ -52,7 +56,7 @@ export function useDetection(imageDataUrl: string | null) {
     processedUrl.current = imageDataUrl;
 
     // Reset state for new detection
-    setState({ phase: 'idle', result: null, keypoints: [], sourceWidth: 0, sourceHeight: 0, error: '' });
+    setState({ phase: 'idle', result: null, keypoints: [], sourceWidth: 0, sourceHeight: 0, error: '', poseWarning: null });
     let cancelled = false;
 
     const run = async () => {
@@ -95,6 +99,7 @@ export function useDetection(imageDataUrl: string | null) {
           return;
         }
 
+        const pose = estimateHeadPose(keypoints);
         const result = runAnalysis(keypoints);
 
         // Persist result for page refreshes (same format as before, without keypoints)
@@ -108,7 +113,7 @@ export function useDetection(imageDataUrl: string | null) {
         const sourceHeight = source instanceof HTMLCanvasElement ? source.height : source.naturalHeight;
 
         if (cancelled) return;
-        setState({ phase: 'done', result, keypoints, sourceWidth, sourceHeight, error: '' });
+        setState({ phase: 'done', result, keypoints, sourceWidth, sourceHeight, error: '', poseWarning: pose.warning });
       } catch (err) {
         if (cancelled) return;
         setState((s) => ({

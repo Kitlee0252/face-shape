@@ -18,7 +18,8 @@ export interface FaceMeasurements {
   cheekboneWidth: number;
   jawWidth: number;
   faceHeight: number;
-  jawAngle: number; // degrees
+  chinAngle: number; // degrees — angle at chin (152) between jaw points (58/288)
+  jawlineCurvature: number; // avg perpendicular deviation of jawline points (px)
 }
 
 export interface FaceRatios {
@@ -28,8 +29,12 @@ export interface FaceRatios {
   foreheadRatio: number;
   /** Jaw width / cheekbone width */
   jawRatio: number;
-  /** Jaw angle in degrees */
-  jawAngle: number;
+  /** Chin angle in degrees — measures chin pointedness */
+  chinAngle: number;
+  /** (foreheadWidth - jawWidth) / faceHeight — positive = forehead wider */
+  widthGradient: number;
+  /** Jawline curvature: avg deviation / jaw-to-chin distance. High = round, low = square */
+  jawlineCurvature: number;
 }
 
 export interface FaceShapeScore {

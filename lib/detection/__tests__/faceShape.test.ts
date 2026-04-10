@@ -20,13 +20,15 @@ function makeKeypoints(overrides: Record<number, [number, number]>): Point[] {
  *   aspect = faceHeight / cheekboneWidth
  *   forehead = foreheadWidth / cheekboneWidth
  *   jaw = jawWidth / cheekboneWidth
- *   jawAngle = angle at chin formed by jawLeft-chin-jawRight (degrees)
+ *   chinAngle = angle at chin formed by jawLeft-chin-jawRight (degrees)
+ *   jawCurve = normalized jawline curvature (0=straight, 0.15=very curved)
  */
 function keypointsFromRatios(
   aspect: number,
   forehead: number,
   jaw: number,
-  jawAngleDeg: number
+  chinAngleDeg: number,
+  jawCurve: number = 0.07
 ): Point[] {
   const cheekW = 200; // arbitrary base
   const faceH = cheekW * aspect;
@@ -38,13 +40,48 @@ function keypointsFromRatios(
   const topY = 0;
   const chinY = faceH;
 
-  // Jaw angle: place jawLeft and jawRight such that the angle at chin = jawAngleDeg
-  // The angle at chin between jawLeft-chin-jawRight
-  const halfAngle = (jawAngleDeg / 2) * (Math.PI / 180);
+  // Jaw angle: place jawLeft and jawRight such that the angle at chin = chinAngleDeg
+  const halfAngle = (chinAngleDeg / 2) * (Math.PI / 180);
   const jawArmLength = jawW / (2 * Math.sin(halfAngle));
   const jawLx = cx - jawW / 2;
   const jawRx = cx + jawW / 2;
   const jawY = chinY - jawArmLength * Math.cos(halfAngle);
+
+  // Place jawline sample points with perpendicular offset for curvature
+  const deviation = jawCurve * faceH * 0.4; // matches normalizer in computeRatios
+  const jawlineOverrides: Record<number, [number, number]> = {};
+
+  // Left jawline: 3 points along chin→jawLeft with outward offset
+  const ldx = jawLx - cx;
+  const ldy = jawY - chinY;
+  const llen = Math.sqrt(ldx * ldx + ldy * ldy);
+  if (llen > 0) {
+    const lnx = ldy / llen;  // perpendicular (outward from face)
+    const lny = -ldx / llen;
+    const leftIndices = LANDMARKS.jawlineLeft;
+    [0.25, 0.5, 0.75].forEach((t, i) => {
+      jawlineOverrides[leftIndices[i]] = [
+        cx + t * ldx + deviation * lnx,
+        chinY + t * ldy + deviation * lny,
+      ];
+    });
+  }
+
+  // Right jawline: 3 points along chin→jawRight with outward offset
+  const rdx = jawRx - cx;
+  const rdy = jawY - chinY;
+  const rlen = Math.sqrt(rdx * rdx + rdy * rdy);
+  if (rlen > 0) {
+    const rnx = -rdy / rlen;  // perpendicular (outward from face)
+    const rny = rdx / rlen;
+    const rightIndices = LANDMARKS.jawlineRight;
+    [0.25, 0.5, 0.75].forEach((t, i) => {
+      jawlineOverrides[rightIndices[i]] = [
+        cx + t * rdx + deviation * rnx,
+        chinY + t * rdy + deviation * rny,
+      ];
+    });
+  }
 
   return makeKeypoints({
     [LANDMARKS.foreheadTop]: [cx, topY],
@@ -55,6 +92,7 @@ function keypointsFromRatios(
     [LANDMARKS.cheekboneRight]: [cx + cheekW / 2, faceH * 0.4],
     [LANDMARKS.jawLeft]: [jawLx, jawY],
     [LANDMARKS.jawRight]: [jawRx, jawY],
+    ...jawlineOverrides,
   });
 }
 
@@ -167,10 +205,10 @@ describe('classifyFaceShape', () => {
   });
 
   describe('key differentiators', () => {
-    it('round vs square is distinguished by jaw angle', () => {
-      // Same proportions, different jaw angle
-      const round = classifyFaceShape(keypointsFromRatios(1.15, 0.9, 0.92, 155));
-      const square = classifyFaceShape(keypointsFromRatios(1.15, 0.92, 0.95, 110));
+    it('round vs square is distinguished by jaw angle and jawline curvature', () => {
+      // Same proportions, different jaw angle + curvature
+      const round = classifyFaceShape(keypointsFromRatios(1.15, 0.9, 0.92, 155, 0.11));
+      const square = classifyFaceShape(keypointsFromRatios(1.15, 0.95, 0.95, 110, 0.03));
       expect(round.primary.type).toBe('round');
       expect(square.primary.type).toBe('square');
     });

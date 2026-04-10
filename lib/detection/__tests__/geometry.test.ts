@@ -27,8 +27,9 @@ describe('distance', () => {
     expect(distance(a, b)).toBe(distance(b, a));
   });
 
-  it('ignores z coordinate (2D only)', () => {
-    expect(distance(p(0, 0, 100), p(3, 4, 200))).toBe(5);
+  it('includes z coordinate in distance', () => {
+    // 3-4-12 triangle: sqrt(9 + 16 + 144) = sqrt(169) = 13
+    expect(distance(p(0, 0, 0), p(3, 4, 12))).toBe(13);
   });
 });
 

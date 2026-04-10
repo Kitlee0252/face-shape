@@ -125,7 +125,7 @@ export default function CanvasOverlay({
       ctx.font = '500 10px system-ui';
       ctx.fillStyle = '#f97316';
       ctx.fillText(
-        `${Math.round(ratios.jawAngle)}°`,
+        `${Math.round(ratios.chinAngle)}°`,
         chin.x * scaleX + radius + 3,
         chin.y * scaleY - 3
       );

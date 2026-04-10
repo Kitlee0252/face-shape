@@ -126,6 +126,11 @@ export default function ResultPage() {
 
   return (
     <main className="flex-1 px-4 py-12">
+      {detection.poseWarning && (
+        <div className="max-w-5xl mx-auto mb-4 rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800">
+          {detection.poseWarning}
+        </div>
+      )}
       <div className="max-w-5xl mx-auto lg:grid lg:grid-cols-[400px_1fr] lg:gap-8">
         {/* Left: Image with overlays */}
         <div className="lg:sticky lg:top-24 lg:self-start mb-8 lg:mb-0">
