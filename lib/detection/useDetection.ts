@@ -45,11 +45,14 @@ export function useDetection(imageDataUrl: string | null) {
     sourceHeight: 0,
     error: '',
   });
-  const ran = useRef(false);
+  const processedUrl = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!imageDataUrl || ran.current) return;
-    ran.current = true;
+    if (!imageDataUrl || imageDataUrl === processedUrl.current) return;
+    processedUrl.current = imageDataUrl;
+
+    // Reset state for new detection
+    setState({ phase: 'idle', result: null, keypoints: [], sourceWidth: 0, sourceHeight: 0, error: '' });
     let cancelled = false;
 
     const run = async () => {

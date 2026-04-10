@@ -30,6 +30,9 @@ export default function Home() {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         URL.revokeObjectURL(url);
 
+        // Clear old results so result page doesn't show stale data
+        sessionStorage.removeItem('faceResult');
+        sessionStorage.removeItem('resultImage');
         sessionStorage.setItem('pendingImage', canvas.toDataURL('image/jpeg', 0.85));
         router.push('/result');
       };

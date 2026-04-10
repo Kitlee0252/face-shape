@@ -27,19 +27,30 @@ export default function ResultPage() {
 
   const [genderTab, setGenderTab] = useState<'female' | 'male'>('female');
 
-  // Load pending image or cached result from sessionStorage
+  // Load pending image or cached result from sessionStorage.
+  // Runs on mount and also on re-navigation (pageshow fires for bfcache).
   useEffect(() => {
-    const pending = sessionStorage.getItem('pendingImage');
-    if (pending) {
-      setPendingImage(pending);
-      setImageUrl(pending);
-      return;
-    }
-    // Fallback: returning to result page with cached data
-    const data = sessionStorage.getItem('faceResult');
-    const img = sessionStorage.getItem('resultImage');
-    if (data) setCachedResult(JSON.parse(data));
-    if (img) setImageUrl(img);
+    const loadFromSession = () => {
+      const pending = sessionStorage.getItem('pendingImage');
+      if (pending) {
+        setPendingImage(pending);
+        setImageUrl(pending);
+        setCachedResult(null); // Clear stale cached result
+        return;
+      }
+      // Fallback: returning to result page with cached data
+      const data = sessionStorage.getItem('faceResult');
+      const img = sessionStorage.getItem('resultImage');
+      if (data) setCachedResult(JSON.parse(data));
+      if (img) setImageUrl(img);
+    };
+
+    loadFromSession();
+
+    // Re-check when page is shown again (covers bfcache and tab switches)
+    const handlePageShow = () => loadFromSession();
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
   }, []);
 
   // Run detection if we have a pending image
