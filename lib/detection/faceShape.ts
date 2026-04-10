@@ -58,20 +58,20 @@ const SHAPE_RULES: Record<
   round: {
     aspect: [1.0, 1.25],
     chinAngle: [100, 155],
-    peakPosition: [0.3, 0.5],
-    topBottomRatio: [1.05, 1.18],  // balanced-ish
-    taperRate: [0.15, 0.35],       // low: wide jaw, gradual taper
+    peakPosition: [0.3, 0.55],     // widened: 0.50 is valid for round faces
+    topBottomRatio: [1.05, 1.18],
+    taperRate: [0.15, 0.35],
     flatness: [0.88, 0.96],
-    weight: [1, 1, 1, 1, 1, 1],
+    weight: [1, 1.5, 1, 1, 1, 1],  // chinAngle weight 1.5: key round signal
   },
   square: {
     aspect: [1.0, 1.25],
     chinAngle: [85, 105],
     peakPosition: [0.3, 0.5],
-    topBottomRatio: [1.00, 1.15],  // most balanced: jaw almost as wide as upper
-    taperRate: [0.05, 0.25],       // lowest: jaw stays wide
+    topBottomRatio: [1.00, 1.15],
+    taperRate: [0.05, 0.25],
     flatness: [0.88, 0.96],
-    weight: [1, 1, 1, 1, 1, 1],
+    weight: [1, 1.5, 1, 1, 1, 1],  // chinAngle weight 1.5: key square signal
   },
   heart: {
     aspect: [1.15, 1.5],
